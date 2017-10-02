@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+	<!-- 
+	Application settings stored with the jar
+	This file must be named app_name.settings.xml where 
+	app_name is the application name in lower case with spaces removed. 
+	The first setting must be called app_name so that per app settings can
+	be merged.
+	-->
+	
+	<setting name="dna.remote-url" value="http://localhost:8080/dna2/api/v1" />
+	<setting name="org.matcalc.toolbox.bio.dna.ext-5p" value="0" />
+	<setting name="org.matcalc.toolbox.bio.dna.ext-3p" value="0" />
+	<setting name="org.matcalc.toolbox.bio.dna.from-center" value="true" />
+	
+	<setting name="org.matcalc.toolbox.bio.dna.web.enabled" value="false" />
+	
+	<setting name="dna.help.type" value="web"/>
+	<setting name="dna.help.url" value="https://bitbucket.org/lab_rdf/matcalc/wiki/DNA"/>
+</settings>

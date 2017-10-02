@@ -1,0 +1,9 @@
+VERSION 2 (22/01/15)
+
+  * Side panel to enter DNA. 
+  * Support for masking.
+  
+  
+VERSION 1 (12/10/14)
+
+  * Extract DNA.
