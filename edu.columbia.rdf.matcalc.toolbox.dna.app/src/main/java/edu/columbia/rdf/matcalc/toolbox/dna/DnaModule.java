@@ -18,8 +18,8 @@ import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.AnnotatableMatrix;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.modern.UIService;
 import org.jebtk.modern.dialog.ModernMessageDialog;
 import org.jebtk.modern.event.ModernClickEvent;
@@ -161,7 +161,7 @@ public class DnaModule extends CalcModule {
 		int c = columns.get(0);
 		 */
 
-		AnnotationMatrix m = mWindow.getCurrentMatrix();
+		DataFrame m = mWindow.getCurrentMatrix();
 		
 		if (m == null) {
 			showLoadMatrixError(mWindow);
@@ -334,10 +334,10 @@ public class DnaModule extends CalcModule {
 
 		int n = m.getColumnCount();
 
-		AnnotationMatrix ret = 
-				AnnotatableMatrix.createAnnotatableMatrix(m.getRowCount(), n + 4);
+		DataFrame ret = 
+				DataFrame.createDataFrame(m.getRowCount(), n + 4);
 
-		AnnotationMatrix.copyColumns(m, ret, 0);
+		DataFrame.copyColumns(m, ret, 0);
 
 		ret.setColumnName(n, "DNA Location");
 		ret.setColumnName(n + 1, "DNA Sequence");
@@ -368,13 +368,13 @@ public class DnaModule extends CalcModule {
 	}
 
 	private void revComp() {
-		AnnotationMatrix m = mWindow.getCurrentMatrix();
+		DataFrame m = mWindow.getCurrentMatrix();
 		
 		List<Sequence> sequences = FastaWriterModule.toSequences(mWindow, m);
 		
 		List<Sequence> revComp = Sequence.reverseComplement(sequences);
 		
-		AnnotationMatrix ret = FastaReaderModule.toMatrix(revComp);
+		DataFrame ret = FastaReaderModule.toMatrix(revComp);
 		
 		mWindow.addToHistory("Reverse Complement", ret);
 		

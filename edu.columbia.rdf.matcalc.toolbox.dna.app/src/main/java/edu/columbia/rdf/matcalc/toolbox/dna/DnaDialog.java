@@ -93,7 +93,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
 		box2.add(new ModernAutoSizeLabel("3' offset", 100));
 		box2.add(mExt3pSpinner);
 		box.add(box2);
-		box.add(UI.createVGap(5));
+		box.add(UI.createVGap(10));
 		box.add(mCheckFromCenter);
 		
 		midSectionHeader("Output", box);
@@ -101,7 +101,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
 		box.add(mCheckUpper);
 		//box.add(UI.createVGap(5));
 		box.add(mCheckLower);
-		//box.add(UI.createVGap(5));
+		box.add(UI.createVGap(5));
 		//box2 = HBox.create();
 		box.add(new HExpandBox(new ModernAutoSizeLabel("Mask"), mMaskCombo));
 		box.add(UI.createVGap(5));

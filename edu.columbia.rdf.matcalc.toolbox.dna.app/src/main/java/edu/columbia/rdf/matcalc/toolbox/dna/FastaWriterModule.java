@@ -24,7 +24,7 @@ import java.util.List;
 import org.jebtk.bioinformatics.Fasta;
 import org.jebtk.bioinformatics.dna.Sequence;
 import org.jebtk.bioinformatics.ui.filters.FastaSaveGuiFileFilter;
-import org.jebtk.math.matrix.AnnotationMatrix;
+import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.modern.io.GuiFileExtFilter;
 
 import edu.columbia.rdf.matcalc.MainMatCalcWindow;
@@ -56,7 +56,7 @@ public class FastaWriterModule extends FileModule  {
 	@Override
 	public boolean saveFile(final MainMatCalcWindow window,
 			final Path file, 
-			final AnnotationMatrix m) throws IOException {
+			final DataFrame m) throws IOException {
 		
 		List<Sequence> sequences = toSequences(window, m);
 		
@@ -70,25 +70,25 @@ public class FastaWriterModule extends FileModule  {
 	}
 	
 	public static List<Sequence> toSequences(final MainMatCalcWindow window,
-			final AnnotationMatrix m) {
+			final DataFrame m) {
 		
-		int c1 = AnnotationMatrix.findColumn(m, "Name");
+		int c1 = DataFrame.findColumn(m, "Name");
 		
 		if (c1 == -1) {
-			c1 = AnnotationMatrix.findColumn(m, "DNA Location");
+			c1 = DataFrame.findColumn(m, "DNA Location");
 		}
 		
 		if (c1 == -1) {
-			c1 = AnnotationMatrix.findColumn(m, "Location");
+			c1 = DataFrame.findColumn(m, "Location");
 		}
 		
-		int c2 = AnnotationMatrix.findColumn(m, "DNA Sequence");
+		int c2 = DataFrame.findColumn(m, "DNA Sequence");
 		
 		if (c2 == -2) {
 			return Collections.emptyList();
 		}
 		
-		int c3 = AnnotationMatrix.findColumn(m, "Options");
+		int c3 = DataFrame.findColumn(m, "Options");
 		
 		
 		List<Sequence> sequences = new ArrayList<Sequence>(m.getRowCount());
