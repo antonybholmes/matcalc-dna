@@ -15,7 +15,6 @@ import edu.columbia.rdf.matcalc.MainMatCalc;
 import edu.columbia.rdf.matcalc.ModuleLoader;
 import edu.columbia.rdf.matcalc.bio.BioModuleLoader;
 import edu.columbia.rdf.matcalc.toolbox.dna.DnaModule;
-import edu.columbia.rdf.matcalc.toolbox.dna.FastaWriterModule;
 
 
 

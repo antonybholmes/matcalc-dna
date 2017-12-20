@@ -2,23 +2,22 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyLocal;
+import org.jebtk.bioinformatics.dna.GenomeAssemblyFS;
 import org.jebtk.bioinformatics.dna.GenomeAssemblyWeb;
+import org.jebtk.bioinformatics.dna.GenomeAssemblyZip;
 import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.genomic.Dna;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
-import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
-import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.modern.UIService;
 import org.jebtk.modern.dialog.ModernMessageDialog;
@@ -46,7 +45,7 @@ public class DnaModule extends CalcModule {
 	//private DnaOptionsRibbonSection mDnaSection = 
 	//		new DnaOptionsRibbonSection();
 
-	private static final Path RES_DIR = PathUtils.getPath("res/modules/dna");
+	
 
 	//private ModernCheckBox mCheckIndels = new ModernCheckBox("Indels");
 
@@ -62,8 +61,11 @@ public class DnaModule extends CalcModule {
 			}
 		}
 
+		
+		DnaService.getInstance().add(new GenomeAssemblyFS(Dna.RES_DIR));
+		
 		// Prefer local over web
-		DnaService.getInstance().add(new GenomeAssemblyLocal(RES_DIR));
+		DnaService.getInstance().add(new GenomeAssemblyZip(Dna.RES_DIR));
 	}
 	
 	public DnaModule() {
@@ -79,6 +81,8 @@ public class DnaModule extends CalcModule {
 	public GuiAppInfo getModuleInfo() {
 		return new DnaInfo();
 	}
+	
+
 
 	@Override
 	public void init(MainMatCalcWindow window) {
@@ -103,8 +107,6 @@ public class DnaModule extends CalcModule {
 				try {
 					dna();
 				} catch (IOException e1) {
-					e1.printStackTrace();
-				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 			}});
@@ -132,8 +134,6 @@ public class DnaModule extends CalcModule {
 
 		try {
 			dna();
-		} catch (ParseException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -147,7 +147,7 @@ public class DnaModule extends CalcModule {
 	 * @throws IOException
 	 * @throws ParseException
 	 */
-	private void dna() throws IOException, ParseException {
+	private void dna() throws IOException {
 		/*
 		List<Integer> columns = mWindow.getSelectedColumns();
 
@@ -188,9 +188,9 @@ public class DnaModule extends CalcModule {
 			return;
 		}
 
-		List<GenomicRegion> regions = new ArrayList<GenomicRegion>(m.getRowCount());
+		List<GenomicRegion> regions = new ArrayList<GenomicRegion>(m.getRows());
 
-		for (int i = 0; i < m.getRowCount(); ++i) {
+		for (int i = 0; i < m.getRows(); ++i) {
 			if (locCol != -1) {
 				regions.add(GenomicRegion.parse(m.getText(i, locCol)));
 			} else {
@@ -332,10 +332,10 @@ public class DnaModule extends CalcModule {
 		StatusService.getInstance().setStatus("Creating matrix...");
 		LOG.info("Creating matrix...");
 
-		int n = m.getColumnCount();
+		int n = m.getCols();
 
 		DataFrame ret = 
-				DataFrame.createDataFrame(m.getRowCount(), n + 4);
+				DataFrame.createDataFrame(m.getRows(), n + 4);
 
 		DataFrame.copyColumns(m, ret, 0);
 
@@ -353,7 +353,7 @@ public class DnaModule extends CalcModule {
 		
 		String opts = Join.onSemiColon().values(options).toString();
 		
-		for (int i = 0; i < m.getRowCount(); ++i) {
+		for (int i = 0; i < m.getRows(); ++i) {
 			String seq = revCompSeqs.get(i).getSequence().toString();
 
 			ret.set(i, n, revCompSeqs.get(i).getLocation());

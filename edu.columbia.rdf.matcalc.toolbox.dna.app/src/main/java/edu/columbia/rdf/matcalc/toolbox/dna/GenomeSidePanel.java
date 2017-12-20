@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.swing.Box;
 
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
 import org.jebtk.modern.button.ModernButtonGroup;
 import org.jebtk.modern.button.ModernRadioButton;
@@ -34,12 +35,15 @@ public class GenomeSidePanel extends ModernComponent {
 	public GenomeSidePanel() {
 		setHeader(new ModernSubHeadingLabel("Genome", DOUBLE_BOTTOM_BORDER)); 
 		
-		Map<String, GenomeAssembly> assemblyMap =
-				new TreeMap<String, GenomeAssembly>();
+		IterMap<String, GenomeAssembly> assemblyMap =
+				new IterTreeMap<String, GenomeAssembly>();
 		
 		for (GenomeAssembly a : DnaService.getInstance()) {
 			try {
 				for (String genome : a.getGenomes()) {
+					// Since items are loaded into the DNA service in order,
+					// if two services serve hg19 for example, the latter will
+					// be used to get the DNA.
 					assemblyMap.put(genome, a);
 				}
 			} catch (IOException e) {
@@ -54,7 +58,7 @@ public class GenomeSidePanel extends ModernComponent {
 		boolean first = true;
 		
 		// If two services provide the same genome, use the later.
-		for (String genome : assemblyMap.keySet()) {
+		for (String genome : assemblyMap) {
 			ModernRadioButton radio = new ModernRadioButton(genome, first);
 			mCheckMap.put(radio, assemblyMap.get(genome));
 			bg.add(radio);

@@ -91,9 +91,9 @@ public class FastaWriterModule extends FileModule  {
 		int c3 = DataFrame.findColumn(m, "Options");
 		
 		
-		List<Sequence> sequences = new ArrayList<Sequence>(m.getRowCount());
+		List<Sequence> sequences = new ArrayList<Sequence>(m.getRows());
 		
-		for (int i = 0; i < m.getRowCount(); ++i) {
+		for (int i = 0; i < m.getRows(); ++i) {
 			String name = c1 != -1 ? m.getText(i, c1) : "Seq" + (i + 1);
 			
 			// If we have some options describing how the sequence was

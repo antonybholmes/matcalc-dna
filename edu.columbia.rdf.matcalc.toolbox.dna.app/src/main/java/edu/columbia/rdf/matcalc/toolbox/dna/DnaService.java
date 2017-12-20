@@ -28,12 +28,14 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.core.AppService;
 import org.jebtk.core.collections.ArrayListCreator;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.UniqueArrayList;
@@ -51,7 +53,10 @@ import org.jebtk.modern.tree.ModernCheckTreeMode;
  * @author Antony Holmes Holmes
  */
 public class DnaService implements Iterable<GenomeAssembly> {
-
+	
+	
+	//public static final Path RES_DIR = PathUtils.getPath("res/modules/dna");
+	
 	private static class DnaServiceLoader {
 		private static final DnaService INSTANCE = new DnaService();
 	}
