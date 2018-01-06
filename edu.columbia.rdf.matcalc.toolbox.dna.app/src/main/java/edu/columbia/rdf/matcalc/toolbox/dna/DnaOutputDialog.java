@@ -26,93 +26,85 @@ import org.jebtk.modern.text.ModernClipboardTextArea;
 import org.jebtk.modern.window.ModernWindow;
 import org.jebtk.modern.window.WindowWidgetFocusEvents;
 
-
 public class DnaOutputDialog extends ModernDialogTaskWindow implements ModernClickListener {
-	private static final long serialVersionUID = 1L;
-	
-	private ModernClipboardTextArea mTextArea =
-			new ModernClipboardTextArea();
-	
-	private ModernButton mSaveButton = new ModernDialogFlatButton(UI.MENU_SAVE, 
-					UIService.getInstance().loadIcon(SaveVectorIcon.class, 16));
-	
-	private List<Sequence> mSequences;
+  private static final long serialVersionUID = 1L;
 
-	
-	public DnaOutputDialog(ModernWindow parent, List<Sequence> sequences) {
-		super(parent, false);
-		
-		mSequences = sequences;
-		
-		setSubTitle("FASTA Output");
+  private ModernClipboardTextArea mTextArea = new ModernClipboardTextArea();
 
-		createUi();
-		
-		setup();
-	}
+  private ModernButton mSaveButton = new ModernDialogFlatButton(UI.MENU_SAVE,
+      UIService.getInstance().loadIcon(SaveVectorIcon.class, 16));
 
-	private void setup() {
-		StringBuilder buffer = new StringBuilder();
-		
-		for (Sequence sequence : mSequences) {
-			buffer.append(">").append(sequence.getName()).append("\n");
-			buffer.append(sequence.toString()).append("\n");
-		}
-		
-		setResizable(true);
-		
-		mTextArea.setEditable(false);
-		mTextArea.setText(buffer.toString());
-		
-		
-		addWindowListener(new WindowWidgetFocusEvents(mOkButton));
-		
-		mSaveButton.addClickListener(this);
+  private List<Sequence> mSequences;
 
-		setSize(640, 480);
-		
-		UI.centerWindowToScreen(this);
-	}
+  public DnaOutputDialog(ModernWindow parent, List<Sequence> sequences) {
+    super(parent, false);
 
-	private final void createUi() {
-		ModernPanel panel = new ModernPanel();
-		
-		panel.add(new ModernScrollPane(mTextArea), BorderLayout.CENTER);
-		
-		Box box = HBox.create();
-		
-		box.add(mSaveButton);
-		box.setBorder(ModernPanel.TOP_BORDER);
-		panel.setFooter(box);
-		
-		
-		setDialogCardContent(panel);
-	}
+    mSequences = sequences;
 
-	public final void clicked(ModernClickEvent e) {
-		if (e.getMessage().equals(UI.MENU_SAVE)) {
-			try {
-				save();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} else {
-			super.clicked(e);
-		}
-	}
+    setSubTitle("FASTA Output");
 
-	private void save() throws IOException {
-		Path file = BioInfDialog.saveFastaFile(getParentWindow(), 
-				RecentFilesService.getInstance().getPwd());
-		
-		if (file == null) {
-			return;
-		}
-		
-		Sequence.writeFasta(mSequences, file);
-		
-		ModernMessageDialog.createFileSavedDialog(getParentWindow(), 
-				getAppInfo().getName(), 
-				file);
-	}
+    createUi();
+
+    setup();
+  }
+
+  private void setup() {
+    StringBuilder buffer = new StringBuilder();
+
+    for (Sequence sequence : mSequences) {
+      buffer.append(">").append(sequence.getName()).append("\n");
+      buffer.append(sequence.toString()).append("\n");
+    }
+
+    setResizable(true);
+
+    mTextArea.setEditable(false);
+    mTextArea.setText(buffer.toString());
+
+    addWindowListener(new WindowWidgetFocusEvents(mOkButton));
+
+    mSaveButton.addClickListener(this);
+
+    setSize(640, 480);
+
+    UI.centerWindowToScreen(this);
+  }
+
+  private final void createUi() {
+    ModernPanel panel = new ModernPanel();
+
+    panel.add(new ModernScrollPane(mTextArea), BorderLayout.CENTER);
+
+    Box box = HBox.create();
+
+    box.add(mSaveButton);
+    box.setBorder(ModernPanel.TOP_BORDER);
+    panel.setFooter(box);
+
+    setDialogCardContent(panel);
+  }
+
+  public final void clicked(ModernClickEvent e) {
+    if (e.getMessage().equals(UI.MENU_SAVE)) {
+      try {
+        save();
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+    } else {
+      super.clicked(e);
+    }
+  }
+
+  private void save() throws IOException {
+    Path file = BioInfDialog.saveFastaFile(getParentWindow(), RecentFilesService.getInstance().getPwd());
+
+    if (file == null) {
+      return;
+    }
+
+    Sequence.writeFasta(mSequences, file);
+
+    ModernMessageDialog.createFileSavedDialog(getParentWindow(), getAppInfo().getName(), file);
+  }
 }

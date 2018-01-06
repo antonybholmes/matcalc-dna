@@ -45,82 +45,69 @@ import org.jebtk.core.tree.TreeRootNode;
 import org.jebtk.modern.tree.ModernCheckTree;
 import org.jebtk.modern.tree.ModernCheckTreeMode;
 
-
-
 /**
  * Service for extracting DNA from sequences.
  *
  * @author Antony Holmes Holmes
  */
 public class DnaService implements Iterable<GenomeAssembly> {
-	
-	
-	//public static final Path RES_DIR = PathUtils.getPath("res/modules/dna");
-	
-	private static class DnaServiceLoader {
-		private static final DnaService INSTANCE = new DnaService();
-	}
 
-	public static DnaService getInstance() {
-		return DnaServiceLoader.INSTANCE;
-	}
+  // public static final Path RES_DIR = PathUtils.getPath("res/modules/dna");
 
-	
+  private static class DnaServiceLoader {
+    private static final DnaService INSTANCE = new DnaService();
+  }
 
-	private List<GenomeAssembly> mAssemblies = 
-			new UniqueArrayList<GenomeAssembly>(10);
+  public static DnaService getInstance() {
+    return DnaServiceLoader.INSTANCE;
+  }
 
-	
-	public void add(GenomeAssembly assembly) {
-		mAssemblies.add(assembly);
-	}
+  private List<GenomeAssembly> mAssemblies = new UniqueArrayList<GenomeAssembly>(10);
 
-	public ModernCheckTree<GenomeAssembly> createTree() throws IOException {
-		return createTree(ModernCheckTreeMode.RADIO);
-	}
+  public void add(GenomeAssembly assembly) {
+    mAssemblies.add(assembly);
+  }
 
-	public ModernCheckTree<GenomeAssembly> createTree(ModernCheckTreeMode mode) throws IOException {
-		ModernCheckTree<GenomeAssembly> tree =
-				new ModernCheckTree<GenomeAssembly>(mode);
+  public ModernCheckTree<GenomeAssembly> createTree() throws IOException {
+    return createTree(ModernCheckTreeMode.RADIO);
+  }
 
+  public ModernCheckTree<GenomeAssembly> createTree(ModernCheckTreeMode mode) throws IOException {
+    ModernCheckTree<GenomeAssembly> tree = new ModernCheckTree<GenomeAssembly>(mode);
 
-		// Organize by type
-		
-		Map<DataSource, List<GenomeAssembly>> sourceMap =
-				DefaultTreeMap.create(new ArrayListCreator<GenomeAssembly>());
-		
-		for (GenomeAssembly a : mAssemblies) {
-			sourceMap.get(a.getDataSource()).add(a);
-		}
-		
-		
-		TreeRootNode<GenomeAssembly> root = new TreeRootNode<GenomeAssembly>();
-		
-		for (DataSource source : sourceMap.keySet()) {
-			TreeNode<GenomeAssembly> node = 
-					new TreeNode<GenomeAssembly>(source.toString());
-			
-			for (GenomeAssembly a : sourceMap.get(source)) {
-				for (String genome : a.getGenomes()) {
-					CheckTreeNode<GenomeAssembly> child = 
-							new CheckTreeNode<GenomeAssembly>(genome, a);
-					
-					node.addChild(child);
-				}
-			}
-			
-			root.addChild(node);
-		}
+    // Organize by type
 
-		tree.setRoot(root);
+    Map<DataSource, List<GenomeAssembly>> sourceMap = DefaultTreeMap.create(new ArrayListCreator<GenomeAssembly>());
 
-		tree.setChildrenAreExpanded(true, true);
+    for (GenomeAssembly a : mAssemblies) {
+      sourceMap.get(a.getDataSource()).add(a);
+    }
 
-		return tree;
-	}
+    TreeRootNode<GenomeAssembly> root = new TreeRootNode<GenomeAssembly>();
 
-	@Override
-	public Iterator<GenomeAssembly> iterator() {
-		return mAssemblies.iterator();
-	}
+    for (DataSource source : sourceMap.keySet()) {
+      TreeNode<GenomeAssembly> node = new TreeNode<GenomeAssembly>(source.toString());
+
+      for (GenomeAssembly a : sourceMap.get(source)) {
+        for (String genome : a.getGenomes()) {
+          CheckTreeNode<GenomeAssembly> child = new CheckTreeNode<GenomeAssembly>(genome, a);
+
+          node.addChild(child);
+        }
+      }
+
+      root.addChild(node);
+    }
+
+    tree.setRoot(root);
+
+    tree.setChildrenAreExpanded(true, true);
+
+    return tree;
+  }
+
+  @Override
+  public Iterator<GenomeAssembly> iterator() {
+    return mAssemblies.iterator();
+  }
 }

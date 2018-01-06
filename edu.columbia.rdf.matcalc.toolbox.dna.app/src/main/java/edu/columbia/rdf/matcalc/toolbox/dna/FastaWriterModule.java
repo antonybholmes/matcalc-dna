@@ -30,81 +30,77 @@ import org.jebtk.modern.io.GuiFileExtFilter;
 import edu.columbia.rdf.matcalc.MainMatCalcWindow;
 import edu.columbia.rdf.matcalc.toolbox.FileModule;
 
-
 /**
  * Allow users to open and save Broad GCT files
  *
  * @author Antony Holmes Holmes
  *
  */
-public class FastaWriterModule extends FileModule  {
-	private static final GuiFileExtFilter SAVE_FILTER = 
-			new FastaSaveGuiFileFilter();
+public class FastaWriterModule extends FileModule {
+  private static final GuiFileExtFilter SAVE_FILTER = new FastaSaveGuiFileFilter();
 
-	public FastaWriterModule() {
-		registerFileSaveType(SAVE_FILTER);
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.abh.lib.NameProperty#getName()
-	 */
-	@Override
-	public String getName() {
-		return "Fasta Writer";
-	}
+  public FastaWriterModule() {
+    registerFileSaveType(SAVE_FILTER);
+  }
 
-	@Override
-	public boolean saveFile(final MainMatCalcWindow window,
-			final Path file, 
-			final DataFrame m) throws IOException {
-		
-		List<Sequence> sequences = toSequences(window, m);
-		
-		if (sequences.size() == 0) {
-			return false;
-		}
-		
-		Fasta.write(file, sequences);
-		
-		return true;
-	}
-	
-	public static List<Sequence> toSequences(final MainMatCalcWindow window,
-			final DataFrame m) {
-		
-		int c1 = DataFrame.findColumn(m, "Name");
-		
-		if (c1 == -1) {
-			c1 = DataFrame.findColumn(m, "DNA Location");
-		}
-		
-		if (c1 == -1) {
-			c1 = DataFrame.findColumn(m, "Location");
-		}
-		
-		int c2 = DataFrame.findColumn(m, "DNA Sequence");
-		
-		if (c2 == -2) {
-			return Collections.emptyList();
-		}
-		
-		int c3 = DataFrame.findColumn(m, "Options");
-		
-		
-		List<Sequence> sequences = new ArrayList<Sequence>(m.getRows());
-		
-		for (int i = 0; i < m.getRows(); ++i) {
-			String name = c1 != -1 ? m.getText(i, c1) : "Seq" + (i + 1);
-			
-			// If we have some options describing how the sequence was
-			// created, add those
-			if (c3 != -1) {
-				name += " " + m.getText(i, c3);
-			}
-			
-			sequences.add(Sequence.create(name, m.getText(i, c2)));
-		}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.abh.lib.NameProperty#getName()
+   */
+  @Override
+  public String getName() {
+    return "Fasta Writer";
+  }
 
-		return sequences;
-	}
+  @Override
+  public boolean saveFile(final MainMatCalcWindow window, final Path file, final DataFrame m) throws IOException {
+
+    List<Sequence> sequences = toSequences(window, m);
+
+    if (sequences.size() == 0) {
+      return false;
+    }
+
+    Fasta.write(file, sequences);
+
+    return true;
+  }
+
+  public static List<Sequence> toSequences(final MainMatCalcWindow window, final DataFrame m) {
+
+    int c1 = DataFrame.findColumn(m, "Name");
+
+    if (c1 == -1) {
+      c1 = DataFrame.findColumn(m, "DNA Location");
+    }
+
+    if (c1 == -1) {
+      c1 = DataFrame.findColumn(m, "Location");
+    }
+
+    int c2 = DataFrame.findColumn(m, "DNA Sequence");
+
+    if (c2 == -2) {
+      return Collections.emptyList();
+    }
+
+    int c3 = DataFrame.findColumn(m, "Options");
+
+    List<Sequence> sequences = new ArrayList<Sequence>(m.getRows());
+
+    for (int i = 0; i < m.getRows(); ++i) {
+      String name = c1 != -1 ? m.getText(i, c1) : "Seq" + (i + 1);
+
+      // If we have some options describing how the sequence was
+      // created, add those
+      if (c3 != -1) {
+        name += " " + m.getText(i, c3);
+      }
+
+      sequences.add(Sequence.create(name, m.getText(i, c2)));
+    }
+
+    return sequences;
+  }
 }

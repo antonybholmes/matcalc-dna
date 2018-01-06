@@ -20,8 +20,6 @@ import org.jebtk.modern.ribbon.RibbonSubSectionSeparator;
 import org.jebtk.modern.spinner.ModernCompactSpinner;
 import org.jebtk.modern.text.ModernAutoSizeLabel;
 
-
-
 /**
  * Allows user to select a color map.
  *
@@ -29,118 +27,101 @@ import org.jebtk.modern.text.ModernAutoSizeLabel;
  *
  */
 public class DnaOptionsRibbonSection extends RibbonSection implements ModernClickListener {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private RibbonLargeCheckButton mCheckRevComp = 
-			new RibbonLargeCheckButton("Reverse Complement",
-					UIService.getInstance().loadIcon("reverse_complement", 24),
-					"Reverse Complement",
-					"Reverse complement DNA.");
-	
-	private ModernCompactSpinner mStartSpinner =
-			new ModernCompactSpinner(0, 1000, 0);
-	
-	private ModernCompactSpinner mEndSpinner =
-			new ModernCompactSpinner(0, 1000, 0);
-	
-	private ModernCheckBox mCheckMutations = new ModernCheckBox("Mutations");
+  private RibbonLargeCheckButton mCheckRevComp = new RibbonLargeCheckButton("Reverse Complement",
+      UIService.getInstance().loadIcon("reverse_complement", 24), "Reverse Complement", "Reverse complement DNA.");
 
-	private RibbonLargeRadioButton mCheckUppercase = 
-			new RibbonLargeRadioButton("Uppercase", 
-					UIService.getInstance().loadIcon("uppercase", 24),
-					true,
-					"Uppercase",
-					"Display sequence in uppercase letters.");
-	
-	private RibbonLargeRadioButton mCheckLowercase = 
-			new RibbonLargeRadioButton("Lowercase",
-					UIService.getInstance().loadIcon("lowercase", 24),
-					"Lowercase",
-					"Display sequence in lowercase letters.");
-	
-	private ModernComboBox mList = new MaskCombo();
-	
-	public DnaOptionsRibbonSection(Ribbon ribbon) {
-		super(ribbon, "DNA");
-		
-		RibbonLargeButton mButton = new RibbonLargeButton("DNA", 
-				UIService.getInstance().loadIcon(RunVectorIcon.class, 24),
-				"DNA",
-				"Extract the DNA for regions.");
-		mButton.addClickListener(this);
-		
-		add(mButton);
-		add(new RibbonSubSectionSeparator());
-		
-		Box box = new RibbonStripContainer();
-		
-		box.add(new ModernAutoSizeLabel("5' extension"));
-		box.add(createHGap());
-		box.add(mStartSpinner);
-		box.add(createHGap());
-		box.add(new ModernAutoSizeLabel("3' extension"));
-		box.add(createHGap());
-		box.add(mEndSpinner);
-		box.add(createHGap());
-		box.add(mCheckMutations);
-		
-		add(box);
-		
-		add(new RibbonSubSectionSeparator());
-		
-		add(mCheckRevComp);
-		
-		add(new RibbonSubSectionSeparator());
+  private ModernCompactSpinner mStartSpinner = new ModernCompactSpinner(0, 1000, 0);
 
-		add(mCheckUppercase);
-		add(mCheckLowercase);
-		
-		box = new RibbonStripContainer();
-		box.add(mList);
-		add(box);
+  private ModernCompactSpinner mEndSpinner = new ModernCompactSpinner(0, 1000, 0);
 
-		ModernButtonGroup group = new ModernButtonGroup();
-		
-		group.add(mCheckUppercase);
-		group.add(mCheckLowercase);
-	}
+  private ModernCheckBox mCheckMutations = new ModernCheckBox("Mutations");
 
-	@Override
-	public void clicked(ModernClickEvent e) {
-		fireClicked(e);
-	}
+  private RibbonLargeRadioButton mCheckUppercase = new RibbonLargeRadioButton("Uppercase",
+      UIService.getInstance().loadIcon("uppercase", 24), true, "Uppercase", "Display sequence in uppercase letters.");
 
+  private RibbonLargeRadioButton mCheckLowercase = new RibbonLargeRadioButton("Lowercase",
+      UIService.getInstance().loadIcon("lowercase", 24), "Lowercase", "Display sequence in lowercase letters.");
 
-	public boolean getRevComp() {
-		return mCheckRevComp.isSelected();
-	}
+  private ModernComboBox mList = new MaskCombo();
 
-	public int getOffset5p() {
-		return mStartSpinner.getIntValue();
-	}
+  public DnaOptionsRibbonSection(Ribbon ribbon) {
+    super(ribbon, "DNA");
 
-	public int getOffset3p() {
-		return mEndSpinner.getIntValue();
-	}
+    RibbonLargeButton mButton = new RibbonLargeButton("DNA", UIService.getInstance().loadIcon(RunVectorIcon.class, 24),
+        "DNA", "Extract the DNA for regions.");
+    mButton.addClickListener(this);
 
+    add(mButton);
+    add(new RibbonSubSectionSeparator());
 
-	public boolean getDisplayUpper() {
-		return mCheckUppercase.isSelected();
-	}
-	
-	public boolean getIndelMode() {
-		return mCheckMutations.isSelected();
-	}
+    Box box = new RibbonStripContainer();
 
+    box.add(new ModernAutoSizeLabel("5' extension"));
+    box.add(createHGap());
+    box.add(mStartSpinner);
+    box.add(createHGap());
+    box.add(new ModernAutoSizeLabel("3' extension"));
+    box.add(createHGap());
+    box.add(mEndSpinner);
+    box.add(createHGap());
+    box.add(mCheckMutations);
 
-	public RepeatMaskType getRepeatMaskType() {
-		switch (mList.getSelectedIndex()) {
-		case 0:
-			return RepeatMaskType.UPPERCASE;
-		case 2:
-			return RepeatMaskType.N;
-		default:
-			return RepeatMaskType.LOWERCASE;
-		}
-	}
+    add(box);
+
+    add(new RibbonSubSectionSeparator());
+
+    add(mCheckRevComp);
+
+    add(new RibbonSubSectionSeparator());
+
+    add(mCheckUppercase);
+    add(mCheckLowercase);
+
+    box = new RibbonStripContainer();
+    box.add(mList);
+    add(box);
+
+    ModernButtonGroup group = new ModernButtonGroup();
+
+    group.add(mCheckUppercase);
+    group.add(mCheckLowercase);
+  }
+
+  @Override
+  public void clicked(ModernClickEvent e) {
+    fireClicked(e);
+  }
+
+  public boolean getRevComp() {
+    return mCheckRevComp.isSelected();
+  }
+
+  public int getOffset5p() {
+    return mStartSpinner.getIntValue();
+  }
+
+  public int getOffset3p() {
+    return mEndSpinner.getIntValue();
+  }
+
+  public boolean getDisplayUpper() {
+    return mCheckUppercase.isSelected();
+  }
+
+  public boolean getIndelMode() {
+    return mCheckMutations.isSelected();
+  }
+
+  public RepeatMaskType getRepeatMaskType() {
+    switch (mList.getSelectedIndex()) {
+    case 0:
+      return RepeatMaskType.UPPERCASE;
+    case 2:
+      return RepeatMaskType.N;
+    default:
+      return RepeatMaskType.LOWERCASE;
+    }
+  }
 }

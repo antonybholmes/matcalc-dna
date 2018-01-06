@@ -19,7 +19,7 @@ import org.jebtk.modern.ColorTheme;
 import org.jebtk.modern.graphics.icons.ModernApplicationIcon;
 
 public class DnaIcon extends ModernApplicationIcon {
-	public DnaIcon() {
-		super("D", "n", ColorTheme.GREEN);
-	}
+  public DnaIcon() {
+    super("D", "n", ColorTheme.GREEN);
+  }
 }

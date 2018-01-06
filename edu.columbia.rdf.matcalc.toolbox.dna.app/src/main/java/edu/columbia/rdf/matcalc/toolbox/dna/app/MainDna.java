@@ -16,18 +16,16 @@ import edu.columbia.rdf.matcalc.ModuleLoader;
 import edu.columbia.rdf.matcalc.bio.BioModuleLoader;
 import edu.columbia.rdf.matcalc.toolbox.dna.DnaModule;
 
-
-
-
 public class MainDna {
-	public static final void main(String[] args) throws FontFormatException, IOException, SAXException, ParserConfigurationException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
-		AppService.getInstance().setAppInfo("dna");
-		
-		ThemeService.getInstance().setTheme(ColorTheme.GREEN);
-		
-		ModuleLoader ml = new BioModuleLoader()
-				.addModule(DnaModule.class);
-		
-		MainMatCalc.main(new DnaInfo(), ml);
-	}
+  public static final void main(String[] args)
+      throws FontFormatException, IOException, SAXException, ParserConfigurationException, ClassNotFoundException,
+      InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+    AppService.getInstance().setAppInfo("dna");
+
+    ThemeService.getInstance().setTheme(ColorTheme.GREEN);
+
+    ModuleLoader ml = new BioModuleLoader().addModule(DnaModule.class);
+
+    MainMatCalc.main(new DnaInfo(), ml);
+  }
 }

@@ -19,78 +19,77 @@ import org.jebtk.modern.tree.ModernCheckTreeMode;
  *
  */
 public class DnaTreePanel extends ModernComponent {
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	private ModernCheckTree<GenomeAssembly> mTree;
+  private ModernCheckTree<GenomeAssembly> mTree;
 
-	private boolean mCheckAll = true;
+  private boolean mCheckAll = true;
 
-	public DnaTreePanel() {
-		this(ModernCheckTreeMode.RADIO);
-	}
+  public DnaTreePanel() {
+    this(ModernCheckTreeMode.RADIO);
+  }
 
-	public DnaTreePanel(ModernCheckTreeMode mode) {
+  public DnaTreePanel(ModernCheckTreeMode mode) {
 
-		try {
-			mTree = DnaService.getInstance().createTree(mode);
+    try {
+      mTree = DnaService.getInstance().createTree(mode);
 
-			ModernScrollPane scrollPane = new ModernScrollPane(mTree)
-					.setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER);
+      ModernScrollPane scrollPane = new ModernScrollPane(mTree).setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER);
 
-			setBody(scrollPane); //new ModernContentPanel(scrollPane));
-			
-			// Set a default
-			//((CheckTreeNode<String>)mTree.getChildByPath("/ucsc/hg19/ucsc_refseq_hg19")).setChecked(true);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+      setBody(scrollPane); // new ModernContentPanel(scrollPane));
 
-	public List<GenomeAssembly> getAssemblies() {
-		List<CheckTreeNode<GenomeAssembly>> nodes = mTree.getCheckedNodes();
+      // Set a default
+      // ((CheckTreeNode<String>)mTree.getChildByPath("/ucsc/hg19/ucsc_refseq_hg19")).setChecked(true);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-		List<GenomeAssembly> ret = new ArrayList<GenomeAssembly>(nodes.size());
+  public List<GenomeAssembly> getAssemblies() {
+    List<CheckTreeNode<GenomeAssembly>> nodes = mTree.getCheckedNodes();
 
-		for (CheckTreeNode<GenomeAssembly> node : nodes) {
-			GenomeAssembly v = node.getValue();
-			
-			if (v != null) {
-				ret.add(node.getValue());
-			}
-		}
+    List<GenomeAssembly> ret = new ArrayList<GenomeAssembly>(nodes.size());
 
-		return ret;
-	}
+    for (CheckTreeNode<GenomeAssembly> node : nodes) {
+      GenomeAssembly v = node.getValue();
 
-	public GenomeAssembly getAssembly() {
-		List<GenomeAssembly> assemblies = getAssemblies();
+      if (v != null) {
+        ret.add(node.getValue());
+      }
+    }
 
-		if (assemblies.size() > 0) {
-			return assemblies.get(0);
-		} else {
-			return null;
-		}
-	}
-	
-	public List<String> getGenomes() {
-		List<CheckTreeNode<GenomeAssembly>> nodes = mTree.getCheckedNodes();
+    return ret;
+  }
 
-		List<String> ret = new ArrayList<String>(nodes.size());
+  public GenomeAssembly getAssembly() {
+    List<GenomeAssembly> assemblies = getAssemblies();
 
-		for (CheckTreeNode<GenomeAssembly> node : nodes) {
-			ret.add(node.getName());
-		}
+    if (assemblies.size() > 0) {
+      return assemblies.get(0);
+    } else {
+      return null;
+    }
+  }
 
-		return ret;
-	}
+  public List<String> getGenomes() {
+    List<CheckTreeNode<GenomeAssembly>> nodes = mTree.getCheckedNodes();
 
-	public String getGenome() {
-		List<String> genomes = getGenomes();
+    List<String> ret = new ArrayList<String>(nodes.size());
 
-		if (genomes.size() > 0) {
-			return genomes.get(0);
-		} else {
-			return null;
-		}
-	}
+    for (CheckTreeNode<GenomeAssembly> node : nodes) {
+      ret.add(node.getName());
+    }
+
+    return ret;
+  }
+
+  public String getGenome() {
+    List<String> genomes = getGenomes();
+
+    if (genomes.size() > 0) {
+      return genomes.get(0);
+    } else {
+      return null;
+    }
+  }
 }
