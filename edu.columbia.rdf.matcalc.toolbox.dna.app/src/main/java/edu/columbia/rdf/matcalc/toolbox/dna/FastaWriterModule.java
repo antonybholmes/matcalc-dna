@@ -54,7 +54,9 @@ public class FastaWriterModule extends FileModule {
   }
 
   @Override
-  public boolean saveFile(final MainMatCalcWindow window, final Path file, final DataFrame m) throws IOException {
+  public boolean saveFile(final MainMatCalcWindow window,
+      final Path file,
+      final DataFrame m) throws IOException {
 
     List<Sequence> sequences = toSequences(window, m);
 
@@ -67,7 +69,8 @@ public class FastaWriterModule extends FileModule {
     return true;
   }
 
-  public static List<Sequence> toSequences(final MainMatCalcWindow window, final DataFrame m) {
+  public static List<Sequence> toSequences(final MainMatCalcWindow window,
+      final DataFrame m) {
 
     int c1 = DataFrame.findColumn(m, "Name");
 

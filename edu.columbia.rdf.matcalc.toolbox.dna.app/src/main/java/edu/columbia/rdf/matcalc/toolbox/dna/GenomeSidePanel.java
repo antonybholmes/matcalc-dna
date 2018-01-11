@@ -64,7 +64,8 @@ public class GenomeSidePanel extends ModernComponent {
       first = false;
     }
 
-    setBody(new ModernScrollPane(box).setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER).border(BORDER));
+    setBody(new ModernScrollPane(box)
+        .setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER).border(BORDER));
     setBorder(DOUBLE_BORDER);
   }
 

@@ -10,7 +10,8 @@ public class FastaPanel extends ModernPanel {
   private static final long serialVersionUID = 1L;
 
   public <X extends Sequence> FastaPanel(List<X> sequences) {
-    ModernScrollPane scrollPane = new ModernScrollPane(new FastaTextArea(sequences));
+    ModernScrollPane scrollPane = new ModernScrollPane(
+        new FastaTextArea(sequences));
 
     // scrollPane.setVerticalScrollBarPolicy(ScrollBarPolicy.ALWAYS);
 

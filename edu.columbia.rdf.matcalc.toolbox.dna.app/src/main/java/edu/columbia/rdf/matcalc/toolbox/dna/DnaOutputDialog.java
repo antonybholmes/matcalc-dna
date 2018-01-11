@@ -26,7 +26,8 @@ import org.jebtk.modern.text.ModernClipboardTextArea;
 import org.jebtk.modern.window.ModernWindow;
 import org.jebtk.modern.window.WindowWidgetFocusEvents;
 
-public class DnaOutputDialog extends ModernDialogTaskWindow implements ModernClickListener {
+public class DnaOutputDialog extends ModernDialogTaskWindow
+    implements ModernClickListener {
   private static final long serialVersionUID = 1L;
 
   private ModernClipboardTextArea mTextArea = new ModernClipboardTextArea();
@@ -97,7 +98,8 @@ public class DnaOutputDialog extends ModernDialogTaskWindow implements ModernCli
   }
 
   private void save() throws IOException {
-    Path file = BioInfDialog.saveFastaFile(getParentWindow(), RecentFilesService.getInstance().getPwd());
+    Path file = BioInfDialog.saveFastaFile(getParentWindow(),
+        RecentFilesService.getInstance().getPwd());
 
     if (file == null) {
       return;
@@ -105,6 +107,7 @@ public class DnaOutputDialog extends ModernDialogTaskWindow implements ModernCli
 
     Sequence.writeFasta(mSequences, file);
 
-    ModernMessageDialog.createFileSavedDialog(getParentWindow(), getAppInfo().getName(), file);
+    ModernMessageDialog
+        .createFileSavedDialog(getParentWindow(), getAppInfo().getName(), file);
   }
 }

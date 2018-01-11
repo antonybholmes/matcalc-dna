@@ -50,10 +50,11 @@ public class DnaModule extends CalcModule {
     // We only want to load the assemblies once so that each invocation
     // of the module does not trigger them to be loaded repeatedly.
 
-    if (SettingsService.getInstance().getAsBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
+    if (SettingsService.getInstance()
+        .getAsBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
       try {
-        DnaService.getInstance()
-            .add(new GenomeAssemblyWeb(new URL(SettingsService.getInstance().getAsString("dna.remote-url"))));
+        DnaService.getInstance().add(new GenomeAssemblyWeb(new URL(
+            SettingsService.getInstance().getAsString("dna.remote-url"))));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -85,8 +86,9 @@ public class DnaModule extends CalcModule {
 
     Ribbon ribbon = window.getRibbon();
 
-    RibbonLargeButton button = new RibbonLargeButton("DNA", UIService.getInstance().loadIcon(RunVectorIcon.class, 24),
-        "DNA", "Extract the DNA for regions.");
+    RibbonLargeButton button = new RibbonLargeButton("DNA",
+        UIService.getInstance().loadIcon(RunVectorIcon.class, 24), "DNA",
+        "Extract the DNA for regions.");
 
     ribbon.getToolbar("DNA").getSection("DNA").add(button);
     // ribbon.getToolbar("DNA").getSection("DNA").add(UI.createHGap(5));
@@ -109,8 +111,9 @@ public class DnaModule extends CalcModule {
     // ribbon.getToolbar("DNA").getSection("DNA").addSeparator();
     // ribbon.getToolbar("DNA").getSection("DNA").add(UI.createHGap(5));
 
-    button = new RibbonLargeButton(UIService.getInstance().loadIcon("rev_comp", 24), "Reverse Complement DNA",
-        "Reverse Complement DNA.");
+    button = new RibbonLargeButton(
+        UIService.getInstance().loadIcon("rev_comp", 24),
+        "Reverse Complement DNA", "Reverse Complement DNA.");
 
     ribbon.getToolbar("DNA").getSection("DNA").add(button);
 
@@ -146,7 +149,8 @@ public class DnaModule extends CalcModule {
     /*
      * List<Integer> columns = mWindow.getSelectedColumns();
      * 
-     * if (columns.size() == 0) { ModernMessageDialog.createWarningDialog(mWindow,
+     * if (columns.size() == 0) {
+     * ModernMessageDialog.createWarningDialog(mWindow,
      * "You must select a location column.");
      * 
      * return; }
@@ -188,14 +192,17 @@ public class DnaModule extends CalcModule {
         regions.add(GenomicRegion.parse(m.getText(i, locCol)));
       } else {
         if (endCol != -1) {
-          regions.add(GenomicRegion.parse(m.getText(i, chrCol), m.getText(i, startCol), m.getText(i, endCol)));
+          regions.add(GenomicRegion.parse(m.getText(i, chrCol),
+              m.getText(i, startCol),
+              m.getText(i, endCol)));
         } else {
           // Same start and end
 
-          regions.add(GenomicRegion.parse(m.getText(i, chrCol), m.getText(i, startCol)));
+          regions.add(GenomicRegion.parse(m.getText(i, chrCol),
+              m.getText(i, startCol)));
 
-          System.err
-              .println(regions.get(regions.size() - 1).getChr() + " " + regions.get(regions.size() - 1).getStart());
+          System.err.println(regions.get(regions.size() - 1).getChr() + " "
+              + regions.get(regions.size() - 1).getStart());
         }
       }
     }
@@ -224,7 +231,8 @@ public class DnaModule extends CalcModule {
     int offset3p = dialog.getOffset3p(); // mDnaSection.getOffset3p();
 
     // Extend if necessary
-    List<GenomicRegion> extendedRegions = GenomicRegion.extend(regions, offset5p, offset3p);
+    List<GenomicRegion> extendedRegions = GenomicRegion
+        .extend(regions, offset5p, offset3p);
 
     StatusService.getInstance().setStatus("Extracting DNA sequences...");
 
@@ -234,7 +242,8 @@ public class DnaModule extends CalcModule {
 
     boolean uppercase = dialog.getDisplayUpper();
 
-    List<SequenceRegion> sequences = assembly.getSequences(genome, extendedRegions, uppercase, repeatMaskType);
+    List<SequenceRegion> sequences = assembly
+        .getSequences(genome, extendedRegions, uppercase, repeatMaskType);
 
     //
     // Cope with insertions and deletions
@@ -269,8 +278,8 @@ public class DnaModule extends CalcModule {
      * 
      * int start = extRegion.getStart(); int end = extRegion.getEnd();
      * 
-     * if (ref.length() > obs.length()) { // deletion buffer.append(obs.replace("-",
-     * ""));
+     * if (ref.length() > obs.length()) { // deletion
+     * buffer.append(obs.replace("-", ""));
      * 
      * int l = ref.length() - obs.length() + 1;
      * 
@@ -288,8 +297,8 @@ public class DnaModule extends CalcModule {
      * 
      * buffer.append(bases.substring(offset + obs.length())); }
      * 
-     * indelSequences.add(new SequenceRegion(new GenomicRegion(extRegion.getChr(),
-     * start, end), buffer.toString())); } } }
+     * indelSequences.add(new SequenceRegion(new
+     * GenomicRegion(extRegion.getChr(), start, end), buffer.toString())); } } }
      */
 
     // There were no indels so the sequences remain unchanged.

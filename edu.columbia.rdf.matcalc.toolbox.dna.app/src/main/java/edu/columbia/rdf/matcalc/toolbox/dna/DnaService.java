@@ -28,14 +28,12 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.jebtk.bioinformatics.DataSource;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.core.AppService;
 import org.jebtk.core.collections.ArrayListCreator;
 import org.jebtk.core.collections.DefaultTreeMap;
 import org.jebtk.core.collections.UniqueArrayList;
@@ -62,7 +60,8 @@ public class DnaService implements Iterable<GenomeAssembly> {
     return DnaServiceLoader.INSTANCE;
   }
 
-  private List<GenomeAssembly> mAssemblies = new UniqueArrayList<GenomeAssembly>(10);
+  private List<GenomeAssembly> mAssemblies = new UniqueArrayList<GenomeAssembly>(
+      10);
 
   public void add(GenomeAssembly assembly) {
     mAssemblies.add(assembly);
@@ -72,12 +71,15 @@ public class DnaService implements Iterable<GenomeAssembly> {
     return createTree(ModernCheckTreeMode.RADIO);
   }
 
-  public ModernCheckTree<GenomeAssembly> createTree(ModernCheckTreeMode mode) throws IOException {
-    ModernCheckTree<GenomeAssembly> tree = new ModernCheckTree<GenomeAssembly>(mode);
+  public ModernCheckTree<GenomeAssembly> createTree(ModernCheckTreeMode mode)
+      throws IOException {
+    ModernCheckTree<GenomeAssembly> tree = new ModernCheckTree<GenomeAssembly>(
+        mode);
 
     // Organize by type
 
-    Map<DataSource, List<GenomeAssembly>> sourceMap = DefaultTreeMap.create(new ArrayListCreator<GenomeAssembly>());
+    Map<DataSource, List<GenomeAssembly>> sourceMap = DefaultTreeMap
+        .create(new ArrayListCreator<GenomeAssembly>());
 
     for (GenomeAssembly a : mAssemblies) {
       sourceMap.get(a.getDataSource()).add(a);
@@ -86,11 +88,13 @@ public class DnaService implements Iterable<GenomeAssembly> {
     TreeRootNode<GenomeAssembly> root = new TreeRootNode<GenomeAssembly>();
 
     for (DataSource source : sourceMap.keySet()) {
-      TreeNode<GenomeAssembly> node = new TreeNode<GenomeAssembly>(source.toString());
+      TreeNode<GenomeAssembly> node = new TreeNode<GenomeAssembly>(
+          source.toString());
 
       for (GenomeAssembly a : sourceMap.get(source)) {
         for (String genome : a.getGenomes()) {
-          CheckTreeNode<GenomeAssembly> child = new CheckTreeNode<GenomeAssembly>(genome, a);
+          CheckTreeNode<GenomeAssembly> child = new CheckTreeNode<GenomeAssembly>(
+              genome, a);
 
           node.addChild(child);
         }

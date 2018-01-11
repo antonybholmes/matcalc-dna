@@ -34,7 +34,8 @@ public class DnaTreePanel extends ModernComponent {
     try {
       mTree = DnaService.getInstance().createTree(mode);
 
-      ModernScrollPane scrollPane = new ModernScrollPane(mTree).setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER);
+      ModernScrollPane scrollPane = new ModernScrollPane(mTree)
+          .setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER);
 
       setBody(scrollPane); // new ModernContentPanel(scrollPane));
 

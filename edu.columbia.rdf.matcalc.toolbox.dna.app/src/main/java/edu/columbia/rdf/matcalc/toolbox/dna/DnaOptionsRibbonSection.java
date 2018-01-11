@@ -26,31 +26,39 @@ import org.jebtk.modern.text.ModernAutoSizeLabel;
  * @author Antony Holmes Holmes
  *
  */
-public class DnaOptionsRibbonSection extends RibbonSection implements ModernClickListener {
+public class DnaOptionsRibbonSection extends RibbonSection
+    implements ModernClickListener {
   private static final long serialVersionUID = 1L;
 
-  private RibbonLargeCheckButton mCheckRevComp = new RibbonLargeCheckButton("Reverse Complement",
-      UIService.getInstance().loadIcon("reverse_complement", 24), "Reverse Complement", "Reverse complement DNA.");
+  private RibbonLargeCheckButton mCheckRevComp = new RibbonLargeCheckButton(
+      "Reverse Complement",
+      UIService.getInstance().loadIcon("reverse_complement", 24),
+      "Reverse Complement", "Reverse complement DNA.");
 
-  private ModernCompactSpinner mStartSpinner = new ModernCompactSpinner(0, 1000, 0);
+  private ModernCompactSpinner mStartSpinner = new ModernCompactSpinner(0, 1000,
+      0);
 
-  private ModernCompactSpinner mEndSpinner = new ModernCompactSpinner(0, 1000, 0);
+  private ModernCompactSpinner mEndSpinner = new ModernCompactSpinner(0, 1000,
+      0);
 
   private ModernCheckBox mCheckMutations = new ModernCheckBox("Mutations");
 
-  private RibbonLargeRadioButton mCheckUppercase = new RibbonLargeRadioButton("Uppercase",
-      UIService.getInstance().loadIcon("uppercase", 24), true, "Uppercase", "Display sequence in uppercase letters.");
+  private RibbonLargeRadioButton mCheckUppercase = new RibbonLargeRadioButton(
+      "Uppercase", UIService.getInstance().loadIcon("uppercase", 24), true,
+      "Uppercase", "Display sequence in uppercase letters.");
 
-  private RibbonLargeRadioButton mCheckLowercase = new RibbonLargeRadioButton("Lowercase",
-      UIService.getInstance().loadIcon("lowercase", 24), "Lowercase", "Display sequence in lowercase letters.");
+  private RibbonLargeRadioButton mCheckLowercase = new RibbonLargeRadioButton(
+      "Lowercase", UIService.getInstance().loadIcon("lowercase", 24),
+      "Lowercase", "Display sequence in lowercase letters.");
 
   private ModernComboBox mList = new MaskCombo();
 
   public DnaOptionsRibbonSection(Ribbon ribbon) {
     super(ribbon, "DNA");
 
-    RibbonLargeButton mButton = new RibbonLargeButton("DNA", UIService.getInstance().loadIcon(RunVectorIcon.class, 24),
-        "DNA", "Extract the DNA for regions.");
+    RibbonLargeButton mButton = new RibbonLargeButton("DNA",
+        UIService.getInstance().loadIcon(RunVectorIcon.class, 24), "DNA",
+        "Extract the DNA for regions.");
     mButton.addClickListener(this);
 
     add(mButton);

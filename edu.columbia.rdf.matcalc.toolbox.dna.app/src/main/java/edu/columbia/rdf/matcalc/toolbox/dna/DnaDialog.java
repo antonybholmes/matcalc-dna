@@ -22,17 +22,21 @@ import org.jebtk.modern.window.WindowWidgetFocusEvents;
 public class DnaDialog extends ModernDialogHelpWindow {
   private static final long serialVersionUID = 1L;
 
-  private ModernCheckSwitch mCheckRevComp = new ModernCheckSwitch("Reverse complement");
+  private ModernCheckSwitch mCheckRevComp = new ModernCheckSwitch(
+      "Reverse complement");
 
-  private ModernCompactSpinner mExt5pSpinner = new ModernCompactSpinner(0, 10000, 0);
+  private ModernCompactSpinner mExt5pSpinner = new ModernCompactSpinner(0,
+      10000, 0);
 
-  private ModernCompactSpinner mExt3pSpinner = new ModernCompactSpinner(0, 10000, 0);
+  private ModernCompactSpinner mExt3pSpinner = new ModernCompactSpinner(0,
+      10000, 0);
 
   private ModernRadioButton mCheckUpper = new ModernRadioButton("UPPERCASE");
 
   private ModernRadioButton mCheckLower = new ModernRadioButton("lowecase");
 
-  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch("From center");
+  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch(
+      "From center");
 
   private MaskCombo mMaskCombo = new MaskCombo();
 
@@ -49,9 +53,12 @@ public class DnaDialog extends ModernDialogHelpWindow {
   }
 
   private void setup() {
-    mExt5pSpinner.setValue(SettingsService.getInstance().getAsInt("org.matcalc.toolbox.bio.dna.ext-5p"));
-    mExt3pSpinner.setValue(SettingsService.getInstance().getAsInt("org.matcalc.toolbox.bio.dna.ext-3p"));
-    mCheckFromCenter.setSelected(SettingsService.getInstance().getAsBool("org.matcalc.toolbox.bio.dna.from-center"));
+    mExt5pSpinner.setValue(SettingsService.getInstance()
+        .getAsInt("org.matcalc.toolbox.bio.dna.ext-5p"));
+    mExt3pSpinner.setValue(SettingsService.getInstance()
+        .getAsInt("org.matcalc.toolbox.bio.dna.ext-3p"));
+    mCheckFromCenter.setSelected(SettingsService.getInstance()
+        .getAsBool("org.matcalc.toolbox.bio.dna.from-center"));
 
     new ModernButtonGroup(mCheckUpper, mCheckLower);
 
@@ -111,11 +118,15 @@ public class DnaDialog extends ModernDialogHelpWindow {
     if (e.getMessage().equals(UI.BUTTON_OK)) {
 
       // Save some settings
-      SettingsService.getInstance().update("org.matcalc.toolbox.bio.dna.ext-5p", mExt5pSpinner.getIntValue());
+      SettingsService.getInstance().update("org.matcalc.toolbox.bio.dna.ext-5p",
+          mExt5pSpinner.getIntValue());
 
-      SettingsService.getInstance().update("org.matcalc.toolbox.bio.dna.ext-3p", mExt3pSpinner.getIntValue());
+      SettingsService.getInstance().update("org.matcalc.toolbox.bio.dna.ext-3p",
+          mExt3pSpinner.getIntValue());
 
-      SettingsService.getInstance().update("org.matcalc.toolbox.bio.dna.from-center", mCheckFromCenter.isSelected());
+      SettingsService.getInstance().update(
+          "org.matcalc.toolbox.bio.dna.from-center",
+          mCheckFromCenter.isSelected());
     }
 
     super.clicked(e);
