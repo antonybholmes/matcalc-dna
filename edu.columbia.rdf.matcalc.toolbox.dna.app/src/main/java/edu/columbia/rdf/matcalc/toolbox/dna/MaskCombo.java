@@ -1,9 +1,9 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.modern.combobox.ModernComboBox;
+import org.jebtk.modern.combobox.ModernComboBox2;
 
-public class MaskCombo extends ModernComboBox {
+public class MaskCombo extends ModernComboBox2 {
   /**
    * 
    */

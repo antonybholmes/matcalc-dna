@@ -6,7 +6,7 @@ import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.modern.UIService;
 import org.jebtk.modern.button.ModernButtonGroup;
 import org.jebtk.modern.button.ModernCheckBox;
-import org.jebtk.modern.combobox.ModernComboBox;
+import org.jebtk.modern.combobox.ModernComboBox2;
 import org.jebtk.modern.event.ModernClickEvent;
 import org.jebtk.modern.event.ModernClickListener;
 import org.jebtk.modern.graphics.icons.RunVectorIcon;
@@ -51,7 +51,7 @@ public class DnaOptionsRibbonSection extends RibbonSection
       "Lowercase", UIService.getInstance().loadIcon("lowercase", 24),
       "Lowercase", "Display sequence in lowercase letters.");
 
-  private ModernComboBox mList = new MaskCombo();
+  private ModernComboBox2 mList = new MaskCombo();
 
   public DnaOptionsRibbonSection(Ribbon ribbon) {
     super(ribbon, "DNA");

@@ -11,6 +11,7 @@ import org.jebtk.bioinformatics.dna.GenomeAssemblyWeb;
 import org.jebtk.bioinformatics.dna.GenomeAssemblyZip;
 import org.jebtk.bioinformatics.dna.Sequence;
 import org.jebtk.bioinformatics.genomic.Dna;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
@@ -101,7 +102,7 @@ public class DnaModule extends CalcModule {
       @Override
       public void clicked(ModernClickEvent e) {
         try {
-          dna();
+          dna(Genome.HG19);
         } catch (IOException e1) {
           e1.printStackTrace();
         }
@@ -121,7 +122,7 @@ public class DnaModule extends CalcModule {
 
       @Override
       public void clicked(ModernClickEvent e) {
-        revComp();
+        revComp(Genome.HG19);
       }
     });
   }
@@ -131,7 +132,7 @@ public class DnaModule extends CalcModule {
     mWindow.getRibbon().setSelectedTab("DNA");
 
     try {
-      dna();
+      dna(args[0]);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -145,7 +146,7 @@ public class DnaModule extends CalcModule {
    * @throws IOException
    * @throws ParseException
    */
-  private void dna() throws IOException {
+  private void dna(String genome) throws IOException {
     /*
      * List<Integer> columns = mWindow.getSelectedColumns();
      * 
@@ -189,10 +190,10 @@ public class DnaModule extends CalcModule {
 
     for (int i = 0; i < m.getRows(); ++i) {
       if (locCol != -1) {
-        regions.add(GenomicRegion.parse(m.getText(i, locCol)));
+        regions.add(GenomicRegion.parse(genome, m.getText(i, locCol)));
       } else {
         if (endCol != -1) {
-          regions.add(GenomicRegion.parse(m.getText(i, chrCol),
+          regions.add(GenomicRegion.parse(genome, m.getText(i, chrCol),
               m.getText(i, startCol),
               m.getText(i, endCol)));
         } else {
@@ -215,7 +216,7 @@ public class DnaModule extends CalcModule {
       return;
     }
 
-    String genome = dialog.getGenome();
+    genome = dialog.getGenome();
     GenomeAssembly assembly = dialog.getAssembly();
 
     StatusService.getInstance().setStatus("Extending regions...");
@@ -351,14 +352,14 @@ public class DnaModule extends CalcModule {
     StatusService.getInstance().setReady();
   }
 
-  private void revComp() {
+  private void revComp(String genome) {
     DataFrame m = mWindow.getCurrentMatrix();
 
     List<Sequence> sequences = FastaWriterModule.toSequences(mWindow, m);
 
     List<Sequence> revComp = Sequence.reverseComplement(sequences);
 
-    DataFrame ret = FastaReaderModule.toMatrix(revComp);
+    DataFrame ret = FastaReaderModule.toMatrix(genome, revComp);
 
     mWindow.addToHistory("Reverse Complement", ret);
 
