@@ -13,6 +13,8 @@ public class MaskCombo extends ModernComboBox2 {
     addMenuItem("UPPERCASE");
     addMenuItem("lowercase");
     addMenuItem("N");
+    
+    setSelectedIndex(1);
   }
 
   public RepeatMaskType getRepeatMaskType() {

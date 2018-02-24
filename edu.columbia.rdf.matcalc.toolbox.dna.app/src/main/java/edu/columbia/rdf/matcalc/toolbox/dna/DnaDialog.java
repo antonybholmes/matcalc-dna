@@ -35,8 +35,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
 
   private ModernRadioButton mCheckLower = new ModernRadioButton("lowecase");
 
-  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch(
-      "From center");
+  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch("From center");
 
   private MaskCombo mMaskCombo = new MaskCombo();
 

@@ -2,8 +2,10 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.dna.GenomeAssemblyFS;
@@ -13,13 +15,20 @@ import org.jebtk.bioinformatics.dna.Sequence;
 import org.jebtk.bioinformatics.genomic.Dna;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
+import org.jebtk.core.Range;
+import org.jebtk.core.cli.CommandLineArg;
+import org.jebtk.core.cli.CommandLineArgs;
+import org.jebtk.core.cli.Options;
+import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.math.statistics.FDRType;
 import org.jebtk.modern.UIService;
 import org.jebtk.modern.dialog.ModernMessageDialog;
 import org.jebtk.modern.event.ModernClickEvent;
@@ -33,9 +42,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.columbia.rdf.matcalc.MainMatCalcWindow;
+import edu.columbia.rdf.matcalc.OpenMode;
 import edu.columbia.rdf.matcalc.bio.FastaReaderModule;
+import edu.columbia.rdf.matcalc.bio.FastaWriterModule;
 import edu.columbia.rdf.matcalc.toolbox.CalcModule;
 import edu.columbia.rdf.matcalc.toolbox.dna.app.DnaInfo;
+import edu.columbia.rdf.matcalc.toolbox.supervised.TestType;
 
 public class DnaModule extends CalcModule {
   public static final Logger LOG = LoggerFactory.getLogger(DnaModule.class);
@@ -66,10 +78,7 @@ public class DnaModule extends CalcModule {
     // Prefer local over web
     DnaService.getInstance().add(new GenomeAssemblyZip(Dna.RES_DIR));
   }
-
-  public DnaModule() {
-    registerFileModule(new FastaWriterModule());
-  }
+  
 
   @Override
   public String getName() {
@@ -125,16 +134,62 @@ public class DnaModule extends CalcModule {
         revComp(Genome.HG19);
       }
     });
+    
+    button = new RibbonLargeButton(
+        UIService.getInstance().loadIcon("random", 24),
+        "Random DNA", "Create random DNA sequences.");
+
+    ribbon.getToolbar("DNA").getSection("DNA").add(button);
+
+    button.addClickListener(new ModernClickListener() {
+
+      @Override
+      public void clicked(ModernClickEvent e) {
+        try {
+          randomDna();
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
+    });
   }
 
   @Override
   public void run(String... args) {
-    mWindow.getRibbon().setSelectedTab("DNA");
+    String mode = "random";
+    String genome = "grch38";
+    
+    int n = 200;
+    int l = 200;
 
-    try {
-      dna(args[0]);
-    } catch (IOException e) {
-      e.printStackTrace();
+    Options options = new Options()
+        .add('f', "file", true)
+        .add('m', "mode", true)
+        .add('n', "n", true)
+        .add('l', "length", true);
+
+    CommandLineArgs cmdArgs = CommandLineArgs.parse(options, args);
+
+
+    for (CommandLineArg cmdArg : cmdArgs) {
+      switch (cmdArg.getShortName()) {
+      case 'm':
+        mode = cmdArg.getValue();
+        break;
+      case 'n':
+        n = cmdArg.getIntValue();
+        break;
+      case 'l':
+        l = cmdArg.getIntValue();
+        break;
+      case 'g':
+        genome = cmdArg.getValue();
+      }
+    }
+    
+    if (mode.startsWith("rand")) {
+      GenomeService.getInstance().genome(genome)
+      randomDna(genome, assembly, l, n);
     }
   }
 
@@ -351,6 +406,87 @@ public class DnaModule extends CalcModule {
 
     StatusService.getInstance().setReady();
   }
+  
+  private void randomDna() throws IOException {
+    RandomDnaDialog dialog = new RandomDnaDialog(mWindow);
+
+    dialog.setVisible(true);
+
+    if (dialog.isCancelled()) {
+      return;
+    }
+
+    String genome = dialog.getGenome();
+    GenomeAssembly assembly = dialog.getAssembly();
+    
+    RepeatMaskType repeatMaskType = dialog.getRepeatMaskType(); // mDnaSection.getRepeatMaskType();
+
+    boolean uppercase = dialog.getDisplayUpper();
+    
+    int n = dialog.getN();
+    int length = dialog.getLength();
+    
+    List<SequenceRegion> seqs = randomDna(genome, assembly, length, n, uppercase, repeatMaskType);
+    
+    DataFrame ret = DataFrame.createDataFrame(n, 4);
+
+    ret.setColumnName(0, "DNA Location");
+    ret.setColumnName(1, "Length (bp)");
+    ret.setColumnName(2, "Options");
+    ret.setColumnName(3, "DNA Sequence");
+
+    List<String> options = new ArrayList<String>(4);
+
+    options.add("repeat-mask=" + repeatMaskType.toString().toLowerCase());
+
+    String opts = Join.onSemiColon().values(options).toString();
+
+    for (int i = 0; i < seqs.size(); ++i) {
+      SequenceRegion seq = seqs.get(i);
+
+      ret.set(i, 0, seq.getLocation());
+      ret.set(i, 1, seq.getSequence().getLength());
+      ret.set(i, 2, opts);
+      ret.set(i, 3, seq.getSequence().toString());
+    }
+
+    ret.setName("Random DNA");
+    
+    mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
+  }
+  
+  private List<SequenceRegion> randomDna(String genome, 
+      GenomeAssembly assembly, 
+      int length, 
+      int n) throws IOException {
+    return randomDna(genome, assembly, length, n, true, RepeatMaskType.LOWERCASE);
+  }
+  
+  private List<SequenceRegion> randomDna(String genome, 
+      GenomeAssembly assembly, 
+      int length, 
+      int n,
+      boolean displayUpper,
+      RepeatMaskType repeatMaskType) throws IOException {
+    //genome
+    
+    List<GenomicRegion> regions = new ArrayList<GenomicRegion>(n);
+    
+    for (int i : Range.create(n)) {
+      regions.add(GenomicRegion.randomRegion(genome, length));
+    }
+    
+    //Sort to speed up retrival
+    Collections.sort(regions);
+    
+    List<SequenceRegion> ret = new ArrayList<SequenceRegion>(n);
+    
+    for (GenomicRegion region : regions) {
+      ret.add(assembly.getSequence(genome, region, displayUpper, repeatMaskType));
+    }
+    
+    return ret;
+  }
 
   private void revComp(String genome) {
     DataFrame m = mWindow.getCurrentMatrix();
@@ -361,8 +497,8 @@ public class DnaModule extends CalcModule {
 
     DataFrame ret = FastaReaderModule.toMatrix(genome, revComp);
 
-    mWindow.addToHistory("Reverse Complement", ret);
-
-    StatusService.getInstance().setReady();
+    ret.setName("Reverse Complement");
+    
+    mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
   }
 }
