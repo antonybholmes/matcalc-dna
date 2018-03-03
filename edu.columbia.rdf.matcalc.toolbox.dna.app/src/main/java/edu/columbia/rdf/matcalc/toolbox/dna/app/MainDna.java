@@ -28,8 +28,6 @@ public class MainDna {
   UnsupportedLookAndFeelException {
     AppService.getInstance().setAppInfo("dna");
 
-    ThemeService.getInstance().setTheme(ColorTheme.GREEN);
-
     //ModuleLoader ml = new BioModuleLoader().addModule(DnaModule.class);
 
     //ModuleService.getInstance().add(new BioModuleLoader());
@@ -39,14 +37,26 @@ public class MainDna {
     ModuleService.getInstance().add(BedGraphIOModule.class);
     ModuleService.getInstance().add(FastaReaderModule.class);
     ModuleService.getInstance().add(FastaWriterModule.class);
+   
+    
+    if (args.length > 0) {
+      // Run a module
+      ModuleService.getInstance().instance("DNA").run(args);
+    } else {
+      // Load the UI
+
+      ThemeService.getInstance().setTheme(ColorTheme.GREEN);
+
+      MatCalcProperties props = new MatCalcProperties();
+      props.setProperty("matcalc.ui.files.enabled", false);
+      props.setProperty("matcalc.ui.left-tabs.enabled", false);
+      props.setProperty("matcalc.ui.right-tabs.enabled", false);
+      props.setProperty("matcalc.ui.table.drop-shadow.enabled", false);
+      
+      MainMatCalc.main(new DnaInfo(), props);
+    }
     
 
-    MatCalcProperties props = new MatCalcProperties();
-    props.setProperty("matcalc.ui.files.enabled", false);
-    props.setProperty("matcalc.ui.left-tabs.enabled", false);
-    props.setProperty("matcalc.ui.right-tabs.enabled", false);
-    props.setProperty("matcalc.ui.table.drop-shadow.enabled", false);
     
-    MainMatCalc.main(new DnaInfo(), props);
   }
 }

@@ -1,6 +1,5 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.Map;
 import javax.swing.Box;
 
 import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.genomic.GenomeAssemblyService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
@@ -29,25 +29,32 @@ import org.jebtk.modern.widget.ModernTwoStateWidget;
 public class GenomeSidePanel extends ModernComponent {
   private static final long serialVersionUID = 1L;
 
-  private Map<ModernRadioButton, GenomeAssembly> mCheckMap = new HashMap<ModernRadioButton, GenomeAssembly>();
+  private Map<ModernRadioButton, GenomeAssembly> mCheckMap = 
+      new HashMap<ModernRadioButton, GenomeAssembly>();
 
   public GenomeSidePanel() {
     setHeader(new ModernSubHeadingLabel("Genome", DOUBLE_BOTTOM_BORDER));
 
-    IterMap<String, GenomeAssembly> assemblyMap = new IterTreeMap<String, GenomeAssembly>();
+    IterMap<String, GenomeAssembly> assemblyMap = 
+        new IterTreeMap<String, GenomeAssembly>();
 
+    /*
     for (GenomeAssembly a : DnaService.getInstance()) {
       try {
         for (String genome : a.getGenomes()) {
-          // Since items are loaded into the DNA service in order,
-          // if two services serve hg19 for example, the latter will
-          // be used to get the DNA.
           assemblyMap.put(genome, a);
         }
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
+    */
+    
+    
+    for (String genome : GenomeAssemblyService.instance()) {
+      assemblyMap.put(genome, GenomeAssemblyService.instance().get(genome));
+    }
+    
 
     Box box = VBox.create();
 
