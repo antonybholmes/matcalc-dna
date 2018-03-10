@@ -7,7 +7,8 @@ import java.util.List;
 
 import javax.swing.Box;
 
-import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.Bio;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.ui.BioInfDialog;
 import org.jebtk.modern.UI;
 import org.jebtk.modern.UIService;
@@ -42,7 +43,7 @@ public class DnaOutputDialog extends ModernDialogTaskWindow
 
     mSequences = sequences;
 
-    setSubTitle("FASTA Output");
+    setSubTitle(Bio.ASSET_FASTA + " Output");
 
     createUi();
 

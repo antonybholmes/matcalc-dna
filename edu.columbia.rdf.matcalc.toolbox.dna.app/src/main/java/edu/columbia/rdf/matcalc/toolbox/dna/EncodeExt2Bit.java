@@ -1,8 +1,10 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,10 @@ import java.util.List;
 import org.jebtk.bioinformatics.FastaReader;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.core.collections.IterMap;
+import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.io.FileUtils;
+import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,24 +62,35 @@ public class EncodeExt2Bit {
 
   private static final Logger LOG = 
       LoggerFactory.getLogger(EncodeExt2Bit.class);
+  
+  private static final String N_FILE_EXT = ".n.1bit";
 
-  public static void encodeGenome(String genome, Path dir) throws IOException {
+  private static final String MASK_EXT = ".mask.1bit";
+
+  private static final String DNA_EXT = ".dna.2bit";
+
+  public static void encodeGenome(String genome, Path dir, Path outDir) throws IOException {
     //Path dir = file.toAbsolutePath().getParent();
 
+    FileUtils.mkdir(outDir);
+
     List<Path> chrFiles = FileUtils.endsWith(dir, "fa.gz");
-    
+
     List<Path> files = new ArrayList<Path>();
 
     char[] buffer = new char[300000000];
+
+    IterMap<Chromosome, Integer> sizeMap =
+        new IterTreeMap<Chromosome, Integer>();
 
     for (Path file : chrFiles) {
       FastaReader reader = new FastaReader(file);
 
       int n = reader.next(buffer);
 
-      Chromosome chr = GenomeService.getInstance().chr(genome, reader.currentName());
+      Chromosome chr = GenomeService.instance().chr(genome, reader.currentName());
 
-      LOG.info("Creating {} in directory {}", chr, dir);
+      LOG.info("Creating {} in directory {}", chr, outDir);
 
 
       LOG.info("Read {} chars.", n);
@@ -174,7 +190,7 @@ public class EncodeExt2Bit {
         }
       }
 
-      Path out = dir.resolve(chr + ".dna.2bit");
+      Path out = outDir.resolve(chr + DNA_EXT);
       files.add(out);
       write(out, dna);
 
@@ -183,18 +199,54 @@ public class EncodeExt2Bit {
       //
 
 
-      out = dir.resolve(chr + ".n.1bit");
+      out = outDir.resolve(chr + N_FILE_EXT);
       files.add(out);
       write(out, ns);
 
-      out = dir.resolve(chr + ".mask.1bit");
+      out = outDir.resolve(chr + MASK_EXT);
       files.add(out);
       write(out, mask);
+
+      sizeMap.put(chr, n);
     }
-    
+
     // Create a zip
-    
-    FileUtils.zip(dir.resolve(genome + ".zip"), files);
+
+    FileUtils.zip(outDir.resolve(genome + ".dna.zip"), files);
+
+    // Remove outputs
+
+    for (Path file : files) {
+      Files.delete(file);
+    }
+
+    // Write the size file
+
+    writeChrs(genome, sizeMap, outDir);
+  }
+
+  private static void writeChrs(String genome, IterMap<Chromosome, Integer> sizeMap, Path dir) throws IOException {
+    BufferedWriter writer = FileUtils.newBufferedWriter(dir.resolve(genome + ".chrs.gz"));
+
+    try {
+      writer.write(genome);
+      writer.newLine();
+      writer.write(genome);
+      writer.newLine();
+      writer.write("id\tchr\tsize");
+      writer.newLine();
+
+      for (Chromosome chr : sizeMap) {
+        writer.write(Integer.toString(chr.getId()));
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(chr.toString());
+        writer.write(TextUtils.TAB_DELIMITER);
+        writer.write(Integer.toString(sizeMap.get(chr)));
+        writer.newLine();
+      }
+    } finally {
+      writer.close();
+    }
   }
 
   public void encode(Path file, Chromosome chr, Path dir) throws IOException {
@@ -323,7 +375,7 @@ public class EncodeExt2Bit {
       }
     }
 
-    Path out = dir.resolve(chr + ".dna.2bit");
+    Path out = dir.resolve(chr + DNA_EXT);
     write(out, dna);
 
     //
@@ -331,10 +383,10 @@ public class EncodeExt2Bit {
     //
 
 
-    out = dir.resolve(chr + ".n.1bit");
+    out = dir.resolve(chr + N_FILE_EXT);
     write(out, ns);
 
-    out = dir.resolve(chr + ".mask.1bit");
+    out = dir.resolve(chr + MASK_EXT);
     write(out, mask);
   }
 

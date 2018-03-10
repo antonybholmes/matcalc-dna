@@ -2,7 +2,7 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.util.List;
 
-import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.modern.panel.ModernPanel;
 import org.jebtk.modern.scrollpane.ModernScrollPane;
 

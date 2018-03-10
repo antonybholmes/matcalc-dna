@@ -9,19 +9,18 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import org.jebtk.bioinformatics.dna.GenomeAssemblyFS;
-import org.jebtk.bioinformatics.dna.GenomeAssemblyWeb;
-import org.jebtk.bioinformatics.dna.GenomeAssemblyZip;
-import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.Bio;
+import org.jebtk.bioinformatics.dna.URLSequenceReader;
+import org.jebtk.bioinformatics.dna.ZipSequenceReader;
 import org.jebtk.bioinformatics.ext.ucsc.Bed;
 import org.jebtk.bioinformatics.ext.ucsc.UCSCTrackRegion;
-import org.jebtk.bioinformatics.genomic.Dna;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.bioinformatics.genomic.GenomeAssemblyService;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.Sequence;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
+import org.jebtk.bioinformatics.genomic.SequenceReaderService;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.Range;
 import org.jebtk.core.cli.CommandLineArg;
@@ -34,7 +33,9 @@ import org.jebtk.core.sys.SysUtils;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
+import org.jebtk.modern.UI;
 import org.jebtk.modern.UIService;
+import org.jebtk.modern.dialog.ModernDialogStatus;
 import org.jebtk.modern.dialog.ModernMessageDialog;
 import org.jebtk.modern.event.ModernClickEvent;
 import org.jebtk.modern.event.ModernClickListener;
@@ -70,23 +71,23 @@ public class DnaModule extends CalcModule {
     if (SettingsService.getInstance()
         .getAsBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
       try {
-        GenomeAssemblyService.instance().add(new GenomeAssemblyWeb(new URL(
+        SequenceReaderService.instance().add(new URLSequenceReader(new URL(
             SettingsService.getInstance().getAsString("dna.remote-url"))));
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
 
-    GenomeAssemblyService.instance().add(new GenomeAssemblyFS(Dna.RES_DIR));
+    //GenomeAssemblyService.instance().add(new GenomeAssemblyFS(Genome.GENOME_HOME));
 
     // Prefer local over web
-    GenomeAssemblyService.instance().add(new GenomeAssemblyZip(Dna.RES_DIR));
+    SequenceReaderService.instance().add(new ZipSequenceReader());
   }
 
 
   @Override
   public String getName() {
-    return "DNA";
+    return Bio.ASSET_DNA;
   }
 
   @Override
@@ -100,11 +101,11 @@ public class DnaModule extends CalcModule {
 
     Ribbon ribbon = window.getRibbon();
 
-    RibbonLargeButton button = new RibbonLargeButton("DNA",
-        UIService.getInstance().loadIcon(RunVectorIcon.class, 24), "DNA",
+    RibbonLargeButton button = new RibbonLargeButton(Bio.ASSET_DNA,
+        UIService.getInstance().loadIcon(RunVectorIcon.class, 24), Bio.ASSET_DNA,
         "Extract the DNA for regions.");
 
-    ribbon.getToolbar("DNA").getSection("DNA").add(button);
+    ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
     // ribbon.getToolbar("DNA").getSection("DNA").add(UI.createHGap(5));
     // ribbon.getToolbar("DNA").getSection("DNA").add(new
     // RibbonStripContainer(mCheckIndels));
@@ -129,7 +130,7 @@ public class DnaModule extends CalcModule {
         UIService.getInstance().loadIcon("rev_comp", 24),
         "Reverse Complement DNA", "Reverse Complement DNA.");
 
-    ribbon.getToolbar("DNA").getSection("DNA").add(button);
+    ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
 
     button.addClickListener(new ModernClickListener() {
 
@@ -143,7 +144,7 @@ public class DnaModule extends CalcModule {
         UIService.getInstance().loadIcon("random", 24),
         "Random DNA", "Create random DNA sequences.");
 
-    ribbon.getToolbar("DNA").getSection("DNA").add(button);
+    ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
 
     button.addClickListener(new ModernClickListener() {
 
@@ -156,11 +157,29 @@ public class DnaModule extends CalcModule {
         }
       }
     });
+    
+    button = new RibbonLargeButton(
+        UIService.getInstance().loadIcon("zip", 24),
+        "Encode DNA", "Encode DNA.");
+
+    ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
+
+    button.addClickListener(new ModernClickListener() {
+
+      @Override
+      public void clicked(ModernClickEvent e) {
+        try {
+          encode();
+        } catch (IOException e1) {
+          e1.printStackTrace();
+        }
+      }
+    });
   }
 
   @Override
   public void run(String... args) {
-    String genome = "grch38";
+    String genome = Genome.GRCH38;
 
     Path zipDir = PathUtils.getPwd();
     Path genomeDir = PathUtils.getPwd();
@@ -219,12 +238,12 @@ public class DnaModule extends CalcModule {
 
     LOG.info("dna {}: {} {} {} {}", mode, genome, l, n, zipDir);
 
-    GenomeService.getInstance().setDir(genomeDir);
+    GenomeService.instance().setDir(genomeDir);
 
-    GenomeAssembly assembly = null;
+    SequenceReader assembly = null;
     
     if (zipDir != null) {
-      assembly = new GenomeAssemblyZip(zipDir);
+      assembly = new ZipSequenceReader(zipDir);
     }
     
     if (mode.startsWith("seq")) {
@@ -237,18 +256,46 @@ public class DnaModule extends CalcModule {
       cmdRand(genome, l, n, assembly);
     } else if (mode.startsWith("encode")) {
       try {
-        encode(genome, genomeDir);
+        Path outDir = genomeDir;
+        encode(genome, genomeDir, outDir);
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
   }
-
-  private static void encode(String genome, Path dir) throws IOException {
-    EncodeExt2Bit.encodeGenome(genome, dir);
+  
+  private void encode() throws IOException {
+    EncodeDialog dialog = new EncodeDialog(mWindow);
+    
+    dialog.setVisible(true);
+    
+    if (dialog.getStatus() == ModernDialogStatus.CANCEL) {
+      return;
+    }
+    
+    ModernDialogStatus status = ModernMessageDialog.createOkCancelInfoDialog(mWindow, 
+        "Encoding may take several minutes.");
+    
+    if (status == ModernDialogStatus.CANCEL) {
+      return;
+    }
+    
+    Path outDir = Genome.GENOME_HOME.resolve(dialog.getGenome());
+    
+    encode(dialog.getGenome(), dialog.getDir(), outDir);
+    
+    // Once encoded, invalidate the caches so that it can be discovered.
+    SequenceReaderService.instance().cache();
+    GenomeService.instance().cache();
+    
+    ModernMessageDialog.createInformationDialog(mWindow, "Encoding completed.");
   }
 
-  private static void cmdBed(String genome, Path file, GenomeAssembly assembly) throws IOException {
+  private static void encode(String genome, Path dir, Path outDir) throws IOException {
+    EncodeExt2Bit.encodeGenome(genome, dir, outDir);
+  }
+
+  private static void cmdBed(String genome, Path file, SequenceReader assembly) throws IOException {
     if (file == null) {
       return;
     }
@@ -260,7 +307,7 @@ public class DnaModule extends CalcModule {
     cmdOutputSeqs(genome, regions, assembly);
   }
 
-  private static void cmdRand(String genome, int l, int n, GenomeAssembly assembly) {
+  private static void cmdRand(String genome, int l, int n, SequenceReader assembly) {
 
 
     List<GenomicRegion> regions = new ArrayList<GenomicRegion>(n);
@@ -281,7 +328,7 @@ public class DnaModule extends CalcModule {
   }
 
   private static void cmdOutputSeqs(String genome,
-      List<? extends GenomicRegion> regions, GenomeAssembly assembly) throws IOException {
+      List<? extends GenomicRegion> regions, SequenceReader assembly) throws IOException {
     for (GenomicRegion region : regions) {
       SequenceRegion seq = assembly.getSequence(genome, region);
 
@@ -317,14 +364,16 @@ public class DnaModule extends CalcModule {
       return;
     }
 
-    int locCol = TextUtils.findFirst(m.getColumnNames(), "Location");
+    int locCol = TextUtils.findFirst(m.getColumnNames(), UI.ASSET_LOCATION);
 
+    System.err.println(m.getColumnNames());
+    
     int chrCol = -1;
     int startCol = -1;
     int endCol = -1;
 
     if (locCol == -1) {
-      chrCol = TextUtils.findFirst(m.getColumnNames(), "Chr", "Chrom");
+      chrCol = TextUtils.findFirst(m.getColumnNames(), "Chr");
       startCol = TextUtils.findFirst(m.getColumnNames(), "Start", "Position");
 
       endCol = TextUtils.findFirst(m.getColumnNames(), "End");
@@ -368,7 +417,7 @@ public class DnaModule extends CalcModule {
     }
 
     genome = dialog.getGenome();
-    GenomeAssembly assembly = dialog.getAssembly();
+    SequenceReader assembly = dialog.getAssembly();
 
     StatusService.getInstance().setStatus("Extending regions...");
     LOG.info("Extending regions...");
@@ -475,11 +524,11 @@ public class DnaModule extends CalcModule {
 
     DataFrame.copyColumns(m, ret, 0);
 
-    ret.setColumnName(n, "Genome");
-    ret.setColumnName(n + 1, "DNA Location");
-    ret.setColumnName(n + 2, "DNA Sequence");
-    ret.setColumnName(n + 3, "Length (bp)");
-    ret.setColumnName(n + 4, "Options");
+    ret.setColumnName(n, Bio.ASSET_GENOME);
+    ret.setColumnName(n + 1, Bio.ASSET_DNA_LOCATION);
+    ret.setColumnName(n + 2, Bio.ASSET_DNA_SEQUENCE);
+    ret.setColumnName(n + 3, Bio.ASSET_LEN_BP);
+    ret.setColumnName(n + 4, UI.ASSET_OPTIONS);
 
     List<String> options = new ArrayList<String>(4);
 
@@ -515,7 +564,7 @@ public class DnaModule extends CalcModule {
     }
 
     String genome = dialog.getGenome();
-    GenomeAssembly assembly = dialog.getAssembly();
+    SequenceReader assembly = dialog.getAssembly();
 
     RepeatMaskType repeatMaskType = dialog.getRepeatMaskType(); // mDnaSection.getRepeatMaskType();
 
@@ -528,10 +577,10 @@ public class DnaModule extends CalcModule {
 
     DataFrame ret = DataFrame.createDataFrame(n, 4);
 
-    ret.setColumnName(0, "DNA Location");
-    ret.setColumnName(1, "Length (bp)");
-    ret.setColumnName(2, "Options");
-    ret.setColumnName(3, "DNA Sequence");
+    ret.setColumnName(0, Bio.ASSET_DNA_LOCATION);
+    ret.setColumnName(1, Bio.ASSET_LEN_BP);
+    ret.setColumnName(2, UI.ASSET_OPTIONS);
+    ret.setColumnName(3, Bio.ASSET_DNA_SEQUENCE);
 
     List<String> options = new ArrayList<String>(4);
 
@@ -554,14 +603,14 @@ public class DnaModule extends CalcModule {
   }
 
   private static List<SequenceRegion> randomDna(String genome, 
-      GenomeAssembly assembly, 
+      SequenceReader assembly, 
       int length, 
       int n) throws IOException {
     return randomDna(genome, assembly, length, n, true, RepeatMaskType.LOWERCASE);
   }
 
   private static List<SequenceRegion> randomDna(String genome, 
-      GenomeAssembly assembly, 
+      SequenceReader assembly, 
       int length, 
       int n,
       boolean displayUpper,
@@ -587,13 +636,13 @@ public class DnaModule extends CalcModule {
   }
 
   private static SequenceRegion randomDna(String genome, 
-      GenomeAssembly assembly, 
+      SequenceReader assembly, 
       int length) throws IOException {
     return randomDna(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
   }
 
   private static SequenceRegion randomDna(String genome, 
-      GenomeAssembly assembly, 
+      SequenceReader assembly, 
       int length,
       boolean displayUpper,
       RepeatMaskType repeatMaskType) throws IOException {
@@ -615,7 +664,7 @@ public class DnaModule extends CalcModule {
 
     DataFrame ret = FastaReaderModule.toMatrix(genome, regions, revComp);
 
-    ret.setName("Reverse Complement");
+    ret.setName(Bio.ASSET_REV_COMP);
 
     mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
   }
@@ -624,10 +673,10 @@ public class DnaModule extends CalcModule {
       String genome,
       final DataFrame m) {
 
-    int c1 = DataFrame.findColumn(m, "DNA Location");
+    int c1 = DataFrame.findColumn(m, Bio.ASSET_DNA_LOCATION);
 
     if (c1 == -1) {
-      c1 = DataFrame.findColumn(m, "Location");
+      c1 = DataFrame.findColumn(m, UI.ASSET_LOCATION);
     }
 
     List<GenomicRegion> sequences = new ArrayList<GenomicRegion>(m.getRows());

@@ -1,6 +1,8 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
+import org.jebtk.bioinformatics.genomic.DNA;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.modern.UI;
 import org.jebtk.modern.combobox.ModernComboBox2;
 
 public class MaskCombo extends ModernComboBox2 {
@@ -10,11 +12,11 @@ public class MaskCombo extends ModernComboBox2 {
   private static final long serialVersionUID = 1L;
 
   public MaskCombo() {
-    addMenuItem("UPPERCASE");
-    addMenuItem("lowercase");
-    addMenuItem("N");
+    addMenuItem(UI.ASSET_UPPERCASE);
+    addMenuItem(UI.ASSET_LOWERCASE);
+    addMenuItem(DNA.N);
     
-    setSelectedIndex(1);
+    setSelectedIndex(0); //1);
   }
 
   public RepeatMaskType getRepeatMaskType() {

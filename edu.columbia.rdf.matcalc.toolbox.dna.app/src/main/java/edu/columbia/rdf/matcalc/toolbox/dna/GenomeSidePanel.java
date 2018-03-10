@@ -7,8 +7,9 @@ import java.util.Map;
 
 import javax.swing.Box;
 
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
-import org.jebtk.bioinformatics.genomic.GenomeAssemblyService;
+import org.jebtk.bioinformatics.Bio;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
+import org.jebtk.bioinformatics.genomic.SequenceReaderService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
@@ -29,14 +30,14 @@ import org.jebtk.modern.widget.ModernTwoStateWidget;
 public class GenomeSidePanel extends ModernComponent {
   private static final long serialVersionUID = 1L;
 
-  private Map<ModernRadioButton, GenomeAssembly> mCheckMap = 
-      new HashMap<ModernRadioButton, GenomeAssembly>();
+  private Map<ModernRadioButton, SequenceReader> mCheckMap = 
+      new HashMap<ModernRadioButton, SequenceReader>();
 
   public GenomeSidePanel() {
-    setHeader(new ModernSubHeadingLabel("Genome", DOUBLE_BOTTOM_BORDER));
+    setHeader(new ModernSubHeadingLabel(Bio.ASSET_GENOME, DOUBLE_BOTTOM_BORDER));
 
-    IterMap<String, GenomeAssembly> assemblyMap = 
-        new IterTreeMap<String, GenomeAssembly>();
+    IterMap<String, SequenceReader> assemblyMap = 
+        new IterTreeMap<String, SequenceReader>();
 
     /*
     for (GenomeAssembly a : DnaService.getInstance()) {
@@ -51,8 +52,8 @@ public class GenomeSidePanel extends ModernComponent {
     */
     
     
-    for (String genome : GenomeAssemblyService.instance()) {
-      assemblyMap.put(genome, GenomeAssemblyService.instance().get(genome));
+    for (String genome : SequenceReaderService.instance()) {
+      assemblyMap.put(genome, SequenceReaderService.instance().get(genome));
     }
     
 
@@ -76,8 +77,8 @@ public class GenomeSidePanel extends ModernComponent {
     setBorder(DOUBLE_BORDER);
   }
 
-  public List<GenomeAssembly> getAssemblies() {
-    List<GenomeAssembly> ret = new ArrayList<GenomeAssembly>(mCheckMap.size());
+  public List<SequenceReader> getAssemblies() {
+    List<SequenceReader> ret = new ArrayList<SequenceReader>(mCheckMap.size());
 
     for (ModernTwoStateWidget button : mCheckMap.keySet()) {
       if (button.isSelected()) {
@@ -88,8 +89,8 @@ public class GenomeSidePanel extends ModernComponent {
     return ret;
   }
 
-  public GenomeAssembly getAssembly() {
-    List<GenomeAssembly> assemblies = getAssemblies();
+  public SequenceReader getAssembly() {
+    List<SequenceReader> assemblies = getAssemblies();
 
     if (assemblies.size() > 0) {
       return assemblies.get(0);

@@ -2,7 +2,7 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.util.List;
 
-import org.jebtk.bioinformatics.dna.Sequence;
+import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.modern.text.ModernClipboardTextArea;
 
 public class FastaTextArea extends ModernClipboardTextArea {

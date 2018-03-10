@@ -16,5 +16,6 @@
 	<setting name="org.matcalc.toolbox.bio.dna.web.enabled" value="false" />
 	
 	<setting name="dna.help.type" value="web"/>
-	<setting name="dna.help.url" value="https://bitbucket.org/lab_rdf/matcalc/wiki/DNA"/>
+	<setting name="dna.help.url" value="https://github.com/lab-rdf/matcalc-dna/wiki/DNAmod"/>
+	<setting name="dna.encode.help.url" value="https://github.com/lab-rdf/matcalc-dna/wiki/DNAmod#Encode"/>
 </settings>

@@ -2,8 +2,9 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import javax.swing.Box;
 
-import org.jebtk.bioinformatics.genomic.GenomeAssembly;
+import org.jebtk.bioinformatics.Bio;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
+import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.core.settings.SettingsService;
 import org.jebtk.modern.UI;
 import org.jebtk.modern.button.ModernButtonGroup;
@@ -31,11 +32,14 @@ public class DnaDialog extends ModernDialogHelpWindow {
   private ModernCompactSpinner mExt3pSpinner = new ModernCompactSpinner(0,
       10000, 0);
 
-  private ModernRadioButton mCheckUpper = new ModernRadioButton("UPPERCASE");
+  private ModernRadioButton mCheckUpper = 
+      new ModernRadioButton(UI.ASSET_UPPERCASE);
 
-  private ModernRadioButton mCheckLower = new ModernRadioButton("lowecase");
+  private ModernRadioButton mCheckLower = 
+      new ModernRadioButton(UI.ASSET_LOWERCASE);
 
-  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch("From center");
+  private ModernCheckSwitch mCheckFromCenter = 
+      new ModernCheckSwitch("From center");
 
   private MaskCombo mMaskCombo = new MaskCombo();
 
@@ -85,12 +89,12 @@ public class DnaDialog extends ModernDialogHelpWindow {
     sectionHeader("Extension", box);
 
     Box box2 = HBox.create();
-    box2.add(new ModernAutoSizeLabel("5' offset", 100));
+    box2.add(new ModernAutoSizeLabel(Bio.ASSET_5P_OFFSET, 100));
     box2.add(mExt5pSpinner);
     box.add(box2);
     box.add(UI.createVGap(5));
     box2 = HBox.create();
-    box2.add(new ModernAutoSizeLabel("3' offset", 100));
+    box2.add(new ModernAutoSizeLabel(Bio.ASSET_3P_OFFSET, 100));
     box2.add(mExt3pSpinner);
     box.add(box2);
     box.add(UI.createVGap(10));
@@ -103,13 +107,13 @@ public class DnaDialog extends ModernDialogHelpWindow {
     box.add(mCheckLower);
     box.add(UI.createVGap(5));
     // box2 = HBox.create();
-    box.add(new HExpandBox(new ModernAutoSizeLabel("Mask"), mMaskCombo));
+    box.add(new HExpandBox(new ModernAutoSizeLabel(Bio.ASSET_MASK), mMaskCombo));
     box.add(UI.createVGap(5));
     box.add(mCheckRevComp);
 
     setCard(box);
 
-    getTabsPane().addLeftTab("Genomes", mDnaPanel, 150, 100, 300);
+    getTabsPane().addLeftTab(Bio.ASSET_GENOMES, mDnaPanel, 150, 100, 300);
   }
 
   @Override
@@ -159,7 +163,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
     return mDnaPanel.getGenome();
   }
 
-  public GenomeAssembly getAssembly() {
+  public SequenceReader getAssembly() {
     return mDnaPanel.getAssembly();
   }
 }
