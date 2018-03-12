@@ -6,9 +6,8 @@ We offer some prebuilt genomes so you do not have to create them yourself. Downl
 
 ## mm10
 
-[mm10.chrs.gz](https://drive.google.com/open?id=1eyKnIxM135AWBilU7j4Ia6wUU9ca_993)
-
-[mm10.dna.zip](https://drive.google.com/open?id=1EpnRBGMcuvnuHlQz9ZFAHDoHtGJxxSva)
+1. [mm10.chrs.gz](https://drive.google.com/open?id=1eyKnIxM135AWBilU7j4Ia6wUU9ca_993)
+2. [mm10.dna.zip](https://drive.google.com/open?id=1EpnRBGMcuvnuHlQz9ZFAHDoHtGJxxSva)
 
 # Genome Locations
 
