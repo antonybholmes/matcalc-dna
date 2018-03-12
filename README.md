@@ -1,6 +1,6 @@
 DNAmod is a tool for retrieving DNA sequences for genomic coordinates.
 
-# Prebuild Genomes
+# Prebuilt Genomes
 
 We offer some prebuilt genomes so you do not have to create them yourself. Download both the `chrs.gz` and the `dna.zip` files for the genomes you want
 
