@@ -1,5 +1,14 @@
 DNAmod is a tool for retrieving DNA sequences for genomic coordinates.
 
+# Prebuild Genomes
+
+We offer some prebuilt genomes so you do not have to create them yourself. Download both the `chrs.gz` and the `dna.zip` files for the genomes you want
+
+## mm10
+
+[mm10.chrs.gz](https://drive.google.com/open?id=1eyKnIxM135AWBilU7j4Ia6wUU9ca_993)
+[mm10.dna.zip](https://drive.google.com/open?id=1EpnRBGMcuvnuHlQz9ZFAHDoHtGJxxSva)
+
 # Genome Locations
 
 Genome files must be located in either of the following locations:
