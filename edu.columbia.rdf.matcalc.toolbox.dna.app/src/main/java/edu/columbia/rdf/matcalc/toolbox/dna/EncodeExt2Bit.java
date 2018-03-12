@@ -69,7 +69,7 @@ public class EncodeExt2Bit {
 
   private static final String DNA_EXT = ".dna.2bit";
 
-  public static void encodeGenome(String genome, Path dir, Path outDir) throws IOException {
+  public static Path encodeGenome(String genome, Path dir, Path outDir) throws IOException {
     //Path dir = file.toAbsolutePath().getParent();
 
     FileUtils.mkdir(outDir);
@@ -212,7 +212,9 @@ public class EncodeExt2Bit {
 
     // Create a zip
 
-    FileUtils.zip(outDir.resolve(genome + ".dna.zip"), files);
+    Path out = outDir.resolve(genome + ".dna.zip");
+    
+    FileUtils.zip(out, files);
 
     // Remove outputs
 
@@ -223,6 +225,8 @@ public class EncodeExt2Bit {
     // Write the size file
 
     writeChrs(genome, sizeMap, outDir);
+    
+    return out;
   }
 
   private static void writeChrs(String genome, IterMap<Chromosome, Integer> sizeMap, Path dir) throws IOException {

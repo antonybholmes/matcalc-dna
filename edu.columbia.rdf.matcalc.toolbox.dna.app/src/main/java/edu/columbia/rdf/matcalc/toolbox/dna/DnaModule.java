@@ -280,19 +280,23 @@ public class DnaModule extends CalcModule {
       return;
     }
     
-    Path outDir = Genome.GENOME_HOME.resolve(dialog.getGenome());
+    String genome = dialog.getGenome();
     
-    encode(dialog.getGenome(), dialog.getDir(), outDir);
+    Path outDir = Genome.GENOME_DIR.resolve(genome);
+    
+    Path out = encode(genome, dialog.getDir(), outDir);
     
     // Once encoded, invalidate the caches so that it can be discovered.
     SequenceReaderService.instance().cache();
     GenomeService.instance().cache();
     
-    ModernMessageDialog.createInformationDialog(mWindow, "Encoding completed.");
+    ModernMessageDialog.createInformationDialog(mWindow, 
+        TextUtils.format("Genome {} was saved in", genome), 
+        TextUtils.truncateCenter(PathUtils.toString(out), 70));
   }
 
-  private static void encode(String genome, Path dir, Path outDir) throws IOException {
-    EncodeExt2Bit.encodeGenome(genome, dir, outDir);
+  private static Path encode(String genome, Path dir, Path outDir) throws IOException {
+    return EncodeExt2Bit.encodeGenome(genome, dir, outDir);
   }
 
   private static void cmdBed(String genome, Path file, SequenceReader assembly) throws IOException {
