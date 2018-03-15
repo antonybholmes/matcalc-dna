@@ -83,7 +83,7 @@ public class DnaOutputDialog extends ModernDialogTaskWindow
     box.setBorder(ModernPanel.TOP_BORDER);
     panel.setFooter(box);
 
-    setDialogCardContent(panel);
+    setCard(panel);
   }
 
   public final void clicked(ModernClickEvent e) {

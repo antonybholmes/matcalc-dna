@@ -160,6 +160,8 @@ public class DnaModule extends CalcModule {
         }
       }
     });
+    
+    ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).addSeparator();
 
     button = new RibbonLargeButton(UIService.getInstance().loadIcon("zip", 24),
         "Encode DNA", "Encode DNA.");

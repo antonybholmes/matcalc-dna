@@ -34,7 +34,7 @@ public class GenomeSidePanel extends ModernComponent {
 
   public GenomeSidePanel() {
     setHeader(
-        new ModernSubHeadingLabel(Bio.ASSET_GENOME, DOUBLE_BOTTOM_BORDER));
+        new ModernSubHeadingLabel(Bio.ASSET_GENOME).bottomBorder(10));
 
     IterMap<String, SequenceReader> assemblyMap = new IterTreeMap<String, SequenceReader>();
 
@@ -64,7 +64,7 @@ public class GenomeSidePanel extends ModernComponent {
     }
 
     setBody(new ModernScrollPane(box)
-        .setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER).border(BORDER));
+        .setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER));
     setBorder(DOUBLE_BORDER);
   }
 
