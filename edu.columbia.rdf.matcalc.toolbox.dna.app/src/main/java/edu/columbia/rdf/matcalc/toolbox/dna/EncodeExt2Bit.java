@@ -21,23 +21,17 @@ import org.slf4j.LoggerFactory;
 
 public class EncodeExt2Bit {
 
-  //private static final Map<Character, Integer> ENCODE_MAP =
-  //		new HashMap<Character, Integer>();
+  // private static final Map<Character, Integer> ENCODE_MAP =
+  // new HashMap<Character, Integer>();
 
   private static final byte[] ENCODE_MAP = new byte[Character.MAX_VALUE];
 
   static {
     /*
-		ENCODE_MAP.put('A', 0);
-		ENCODE_MAP.put('C', 1);
-		ENCODE_MAP.put('G', 2);
-		ENCODE_MAP.put('T', 3);
-		ENCODE_MAP.put('a', 0);
-		ENCODE_MAP.put('c', 1);
-		ENCODE_MAP.put('g', 2);
-		ENCODE_MAP.put('t', 3);
-		ENCODE_MAP.put('N', 0);
-		ENCODE_MAP.put('n', 0);
+     * ENCODE_MAP.put('A', 0); ENCODE_MAP.put('C', 1); ENCODE_MAP.put('G', 2);
+     * ENCODE_MAP.put('T', 3); ENCODE_MAP.put('a', 0); ENCODE_MAP.put('c', 1);
+     * ENCODE_MAP.put('g', 2); ENCODE_MAP.put('t', 3); ENCODE_MAP.put('N', 0);
+     * ENCODE_MAP.put('n', 0);
      */
 
     ENCODE_MAP['A'] = 0;
@@ -48,29 +42,30 @@ public class EncodeExt2Bit {
     ENCODE_MAP['c'] = 1;
     ENCODE_MAP['g'] = 2;
     ENCODE_MAP['t'] = 3;
-    //ENCODE_MAP.put('N', 0);
-    //ENCODE_MAP.put('n', 0);
+    // ENCODE_MAP.put('N', 0);
+    // ENCODE_MAP.put('n', 0);
   }
 
-  //private char[] mCBuf;
+  // private char[] mCBuf;
 
-  //private byte[] mN;
+  // private byte[] mN;
 
-  //private byte[] mMask;
+  // private byte[] mMask;
 
-  //private byte[] mDna;
+  // private byte[] mDna;
 
-  private static final Logger LOG = 
-      LoggerFactory.getLogger(EncodeExt2Bit.class);
-  
+  private static final Logger LOG = LoggerFactory
+      .getLogger(EncodeExt2Bit.class);
+
   private static final String N_FILE_EXT = ".n.1bit";
 
   private static final String MASK_EXT = ".mask.1bit";
 
   private static final String DNA_EXT = ".dna.2bit";
 
-  public static Path encodeGenome(String genome, Path dir, Path outDir) throws IOException {
-    //Path dir = file.toAbsolutePath().getParent();
+  public static Path encodeGenome(String genome, Path dir, Path outDir)
+      throws IOException {
+    // Path dir = file.toAbsolutePath().getParent();
 
     FileUtils.mkdir(outDir);
 
@@ -80,18 +75,17 @@ public class EncodeExt2Bit {
 
     char[] buffer = new char[300000000];
 
-    IterMap<Chromosome, Integer> sizeMap =
-        new IterTreeMap<Chromosome, Integer>();
+    IterMap<Chromosome, Integer> sizeMap = new IterTreeMap<Chromosome, Integer>();
 
     for (Path file : chrFiles) {
       FastaReader reader = new FastaReader(file);
 
       int n = reader.next(buffer);
 
-      Chromosome chr = GenomeService.instance().chr(genome, reader.currentName());
+      Chromosome chr = GenomeService.instance().chr(genome,
+          reader.currentName());
 
       LOG.info("Creating {} in directory {}", chr, outDir);
-
 
       LOG.info("Read {} chars.", n);
 
@@ -107,13 +101,14 @@ public class EncodeExt2Bit {
 
       for (int i = 0; i < n; ++i) {
         // The first letter is written into the first 2 bits of the byte
-        // so we must shift to the last two msb of the btye. Each block is 2 bits hence the shift is
+        // so we must shift to the last two msb of the btye. Each block is 2
+        // bits hence the shift is
         // multiplied by 2
         base = buffer[i];
 
         encodedBase = ENCODE_MAP[base];
 
-        dna[bi] = (byte)(dna[bi] | (encodedBase << bs));
+        dna[bi] = (byte) (dna[bi] | (encodedBase << bs));
 
         bs -= 2;
 
@@ -137,7 +132,7 @@ public class EncodeExt2Bit {
           encodedBase = 0;
         }
 
-        ns[bi] = (byte)(ns[bi] | (encodedBase << bs));
+        ns[bi] = (byte) (ns[bi] | (encodedBase << bs));
 
         --bs;
 
@@ -154,15 +149,15 @@ public class EncodeExt2Bit {
       bi = 0;
       bs = 7;
 
-      //int count = 0;
+      // int count = 0;
 
-      ///CountMap<Integer> map = new CountMap<Integer>();
+      /// CountMap<Integer> map = new CountMap<Integer>();
 
       for (int i = 0; i < n; ++i) {
         // The first letter is written into the first 2 bits of the byte
         // so we must shift it. Each block is 2 bits hence the shift is
         // multiplied by 2
-        //int bitShift = blockIndex(i, 2) * 2;
+        // int bitShift = blockIndex(i, 2) * 2;
 
         base = buffer[i];
 
@@ -180,7 +175,7 @@ public class EncodeExt2Bit {
           break;
         }
 
-        mask[bi] = (byte)(mask[bi] | (encodedBase << bs));
+        mask[bi] = (byte) (mask[bi] | (encodedBase << bs));
 
         --bs;
 
@@ -198,7 +193,6 @@ public class EncodeExt2Bit {
       // Now we need to encode the blocks for the N
       //
 
-
       out = outDir.resolve(chr + N_FILE_EXT);
       files.add(out);
       write(out, ns);
@@ -213,7 +207,7 @@ public class EncodeExt2Bit {
     // Create a zip
 
     Path out = outDir.resolve(genome + ".dna.zip");
-    
+
     FileUtils.zip(out, files);
 
     // Remove outputs
@@ -225,12 +219,15 @@ public class EncodeExt2Bit {
     // Write the size file
 
     writeChrs(genome, sizeMap, outDir);
-    
+
     return out;
   }
 
-  private static void writeChrs(String genome, IterMap<Chromosome, Integer> sizeMap, Path dir) throws IOException {
-    BufferedWriter writer = FileUtils.newBufferedWriter(dir.resolve(genome + ".chrs.gz"));
+  private static void writeChrs(String genome,
+      IterMap<Chromosome, Integer> sizeMap,
+      Path dir) throws IOException {
+    BufferedWriter writer = FileUtils
+        .newBufferedWriter(dir.resolve(genome + ".chrs.gz"));
 
     try {
       writer.write(genome);
@@ -254,7 +251,7 @@ public class EncodeExt2Bit {
   }
 
   public void encode(Path file, Chromosome chr, Path dir) throws IOException {
-    //Path dir = file.toAbsolutePath().getParent();
+    // Path dir = file.toAbsolutePath().getParent();
 
     LOG.info("Creating {} in directory {}", chr, dir);
 
@@ -263,8 +260,7 @@ public class EncodeExt2Bit {
     // Enough to store a human chr1
     char[] buffer = new char[300000000];
 
-
-    BufferedReader reader = FileUtils.newBufferedReader(file);		
+    BufferedReader reader = FileUtils.newBufferedReader(file);
 
     try {
       n = reader.read(buffer);
@@ -286,23 +282,21 @@ public class EncodeExt2Bit {
 
     for (int i = 0; i < n; ++i) {
       // The first letter is written into the first 2 bits of the byte
-      // so we must shift to the last two msb of the btye. Each block is 2 bits hence the shift is
+      // so we must shift to the last two msb of the btye. Each block is 2 bits
+      // hence the shift is
       // multiplied by 2
-      //int bitShift = blockIndex(i, 2) * 2;
+      // int bitShift = blockIndex(i, 2) * 2;
 
       base = buffer[i];
 
       /*
-			if (ENCODE_MAP.containsKey(base)) {
-				encodedBase = ENCODE_MAP[base];
-			} else {
-				encodedBase = 0;
-			}
+       * if (ENCODE_MAP.containsKey(base)) { encodedBase = ENCODE_MAP[base]; }
+       * else { encodedBase = 0; }
        */
 
       encodedBase = ENCODE_MAP[base];
 
-      dna[bi] = (byte)(dna[bi] | (encodedBase << bs));
+      dna[bi] = (byte) (dna[bi] | (encodedBase << bs));
 
       bs -= 2;
 
@@ -326,7 +320,7 @@ public class EncodeExt2Bit {
         encodedBase = 0;
       }
 
-      ns[bi] = (byte)(ns[bi] | (encodedBase << bs));
+      ns[bi] = (byte) (ns[bi] | (encodedBase << bs));
 
       --bs;
 
@@ -343,15 +337,15 @@ public class EncodeExt2Bit {
     bi = 0;
     bs = 7;
 
-    //int count = 0;
+    // int count = 0;
 
-    ///CountMap<Integer> map = new CountMap<Integer>();
+    /// CountMap<Integer> map = new CountMap<Integer>();
 
     for (int i = 0; i < n; ++i) {
       // The first letter is written into the first 2 bits of the byte
       // so we must shift it. Each block is 2 bits hence the shift is
       // multiplied by 2
-      //int bitShift = blockIndex(i, 2) * 2;
+      // int bitShift = blockIndex(i, 2) * 2;
 
       base = buffer[i];
 
@@ -369,7 +363,7 @@ public class EncodeExt2Bit {
         break;
       }
 
-      mask[bi] = (byte)(mask[bi] | (encodedBase << bs));
+      mask[bi] = (byte) (mask[bi] | (encodedBase << bs));
 
       --bs;
 
@@ -385,7 +379,6 @@ public class EncodeExt2Bit {
     //
     // Now we need to encode the blocks for the N
     //
-
 
     out = dir.resolve(chr + N_FILE_EXT);
     write(out, ns);
@@ -404,8 +397,6 @@ public class EncodeExt2Bit {
     }
   }
 
-
-
   /**
    * Return number of bytes required to encode characters.
    * 
@@ -416,11 +407,11 @@ public class EncodeExt2Bit {
   public static int byten(int n, int bits) {
     switch (bits) {
     case 1:
-      return (int)Math.ceil(n / 8.0);
+      return (int) Math.ceil(n / 8.0);
     case 2:
-      return (int)Math.ceil(n / 4.0);
+      return (int) Math.ceil(n / 4.0);
     case 4:
-      return (int)Math.ceil(n / 2.0);
+      return (int) Math.ceil(n / 2.0);
     case 8:
       return n;
     case 16:

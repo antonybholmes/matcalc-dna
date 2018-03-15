@@ -15,8 +15,8 @@ public class MaskCombo extends ModernComboBox2 {
     addMenuItem(UI.ASSET_UPPERCASE);
     addMenuItem(UI.ASSET_LOWERCASE);
     addMenuItem(DNA.N);
-    
-    setSelectedIndex(0); //1);
+
+    setSelectedIndex(0); // 1);
   }
 
   public RepeatMaskType getRepeatMaskType() {

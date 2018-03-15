@@ -32,14 +32,14 @@ public class DnaDialog extends ModernDialogHelpWindow {
   private ModernCompactSpinner mExt3pSpinner = new ModernCompactSpinner(0,
       10000, 0);
 
-  private ModernRadioButton mCheckUpper = 
-      new ModernRadioButton(UI.ASSET_UPPERCASE);
+  private ModernRadioButton mCheckUpper = new ModernRadioButton(
+      UI.ASSET_UPPERCASE);
 
-  private ModernRadioButton mCheckLower = 
-      new ModernRadioButton(UI.ASSET_LOWERCASE);
+  private ModernRadioButton mCheckLower = new ModernRadioButton(
+      UI.ASSET_LOWERCASE);
 
-  private ModernCheckSwitch mCheckFromCenter = 
-      new ModernCheckSwitch("From center");
+  private ModernCheckSwitch mCheckFromCenter = new ModernCheckSwitch(
+      "From center");
 
   private MaskCombo mMaskCombo = new MaskCombo();
 
@@ -107,7 +107,8 @@ public class DnaDialog extends ModernDialogHelpWindow {
     box.add(mCheckLower);
     box.add(UI.createVGap(5));
     // box2 = HBox.create();
-    box.add(new HExpandBox(new ModernAutoSizeLabel(Bio.ASSET_MASK), mMaskCombo));
+    box.add(
+        new HExpandBox(new ModernAutoSizeLabel(Bio.ASSET_MASK), mMaskCombo));
     box.add(UI.createVGap(5));
     box.add(mCheckRevComp);
 

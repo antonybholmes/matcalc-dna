@@ -30,32 +30,23 @@ import org.jebtk.modern.widget.ModernTwoStateWidget;
 public class GenomeSidePanel extends ModernComponent {
   private static final long serialVersionUID = 1L;
 
-  private Map<ModernRadioButton, SequenceReader> mCheckMap = 
-      new HashMap<ModernRadioButton, SequenceReader>();
+  private Map<ModernRadioButton, SequenceReader> mCheckMap = new HashMap<ModernRadioButton, SequenceReader>();
 
   public GenomeSidePanel() {
-    setHeader(new ModernSubHeadingLabel(Bio.ASSET_GENOME, DOUBLE_BOTTOM_BORDER));
+    setHeader(
+        new ModernSubHeadingLabel(Bio.ASSET_GENOME, DOUBLE_BOTTOM_BORDER));
 
-    IterMap<String, SequenceReader> assemblyMap = 
-        new IterTreeMap<String, SequenceReader>();
+    IterMap<String, SequenceReader> assemblyMap = new IterTreeMap<String, SequenceReader>();
 
     /*
-    for (GenomeAssembly a : DnaService.getInstance()) {
-      try {
-        for (String genome : a.getGenomes()) {
-          assemblyMap.put(genome, a);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-    }
-    */
-    
-    
+     * for (GenomeAssembly a : DnaService.getInstance()) { try { for (String
+     * genome : a.getGenomes()) { assemblyMap.put(genome, a); } } catch
+     * (IOException e) { e.printStackTrace(); } }
+     */
+
     for (String genome : SequenceReaderService.instance()) {
       assemblyMap.put(genome, SequenceReaderService.instance().get(genome));
     }
-    
 
     Box box = VBox.create();
 
