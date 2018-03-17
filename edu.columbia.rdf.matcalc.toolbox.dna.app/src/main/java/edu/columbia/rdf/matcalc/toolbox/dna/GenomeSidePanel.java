@@ -13,7 +13,9 @@ import org.jebtk.bioinformatics.genomic.SequenceReaderService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
+import org.jebtk.modern.button.CheckBox;
 import org.jebtk.modern.button.ModernButtonGroup;
+import org.jebtk.modern.button.ModernCheckSwitch;
 import org.jebtk.modern.button.ModernRadioButton;
 import org.jebtk.modern.panel.VBox;
 import org.jebtk.modern.scrollpane.ModernScrollPane;
@@ -30,11 +32,11 @@ import org.jebtk.modern.widget.ModernTwoStateWidget;
 public class GenomeSidePanel extends ModernComponent {
   private static final long serialVersionUID = 1L;
 
-  private Map<ModernRadioButton, SequenceReader> mCheckMap = new HashMap<ModernRadioButton, SequenceReader>();
+  private Map<CheckBox, SequenceReader> mCheckMap = new HashMap<CheckBox, SequenceReader>();
 
   public GenomeSidePanel() {
     setHeader(
-        new ModernSubHeadingLabel(Bio.ASSET_GENOME).bottomBorder(10));
+        new ModernSubHeadingLabel(Bio.ASSET_GENOMES).bottomBorder(10));
 
     IterMap<String, SequenceReader> assemblyMap = new IterTreeMap<String, SequenceReader>();
 
@@ -50,16 +52,16 @@ public class GenomeSidePanel extends ModernComponent {
 
     Box box = VBox.create();
 
-    ModernButtonGroup bg = new ModernButtonGroup();
+    //ModernButtonGroup bg = new ModernButtonGroup();
 
     boolean first = true;
 
     // If two services provide the same genome, use the later.
     for (String genome : assemblyMap) {
-      ModernRadioButton radio = new ModernRadioButton(genome, first);
-      mCheckMap.put(radio, assemblyMap.get(genome));
-      bg.add(radio);
-      box.add(radio);
+      CheckBox checkBox = new ModernCheckSwitch(genome, first);
+      mCheckMap.put(checkBox, assemblyMap.get(genome));
+      //bg.add(checkBox);
+      box.add(checkBox);
       first = false;
     }
 
@@ -93,7 +95,7 @@ public class GenomeSidePanel extends ModernComponent {
   public List<String> getGenomes() {
     List<String> ret = new ArrayList<String>(mCheckMap.size());
 
-    for (ModernRadioButton button : mCheckMap.keySet()) {
+    for (CheckBox button : mCheckMap.keySet()) {
       if (button.isSelected()) {
         ret.add(button.getText());
       }

@@ -114,7 +114,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
 
     setCard(box);
 
-    getTabsPane().addLeftTab(Bio.ASSET_GENOMES, mDnaPanel, 150, 100, 300);
+    getTabsPane().tabs().left().add(Bio.ASSET_GENOMES, mDnaPanel, 150, 100, 300);
   }
 
   @Override

@@ -160,7 +160,7 @@ public class DnaModule extends CalcModule {
         }
       }
     });
-    
+
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).addSeparator();
 
     button = new RibbonLargeButton(UIService.getInstance().loadIcon("zip", 24),
@@ -397,7 +397,7 @@ public class DnaModule extends CalcModule {
       List<? extends GenomicRegion> regions,
       SequenceReader assembly) throws IOException {
     for (GenomicRegion region : regions) {
-      SequenceRegion seq = assembly.getSequence(genome, region);
+      SequenceRegion seq = assembly.getSequence(region);
 
       System.out.println(seq.toFasta());
     }
@@ -512,7 +512,7 @@ public class DnaModule extends CalcModule {
     boolean uppercase = dialog.getDisplayUpper();
 
     List<SequenceRegion> sequences = assembly
-        .getSequences(genome, extendedRegions, uppercase, repeatMaskType);
+        .getSequences(extendedRegions, uppercase, repeatMaskType);
 
     //
     // Cope with insertions and deletions
@@ -631,7 +631,7 @@ public class DnaModule extends CalcModule {
       return;
     }
 
-    String genome = dialog.getGenome();
+    List<String> genomes = dialog.getGenomes();
     SequenceReader assembly = dialog.getAssembly();
 
     RepeatMaskType repeatMaskType = dialog.getRepeatMaskType(); // mDnaSection.getRepeatMaskType();
@@ -640,16 +640,26 @@ public class DnaModule extends CalcModule {
 
     int n = dialog.getN();
     int length = dialog.getLength();
+    int t = n * genomes.size();
 
-    List<SequenceRegion> seqs = randomDna(genome,
-        assembly,
-        length,
-        n,
-        uppercase,
-        repeatMaskType);
+    List<SequenceRegion> seqs = new ArrayList<SequenceRegion>(t);
 
-    DataFrame ret = DataFrame.createDataFrame(n, 4);
+    for (String genome : genomes) {
+      System.err.println(genome);
+      
+      seqs.addAll(randomDna(genome,
+          assembly,
+          length,
+          n,
+          uppercase,
+          repeatMaskType));
+    }
 
+    Collections.sort(seqs);
+
+    DataFrame ret = DataFrame.createDataFrame(t, 5);
+
+    ret.setColumnName(0, Bio.ASSET_GENOME);
     ret.setColumnName(0, Bio.ASSET_DNA_LOCATION);
     ret.setColumnName(1, Bio.ASSET_LEN_BP);
     ret.setColumnName(2, UI.ASSET_OPTIONS);
@@ -664,10 +674,11 @@ public class DnaModule extends CalcModule {
     for (int i = 0; i < seqs.size(); ++i) {
       SequenceRegion seq = seqs.get(i);
 
-      ret.set(i, 0, seq.getLocation());
-      ret.set(i, 1, seq.getSequence().getLength());
-      ret.set(i, 2, opts);
-      ret.set(i, 3, seq.getSequence().toString());
+      ret.set(i, 0, seq.getGenome());
+      ret.set(i, 1, seq.getLocation());
+      ret.set(i, 2, seq.getSequence().getLength());
+      ret.set(i, 3, opts);
+      ret.set(i, 4, seq.getSequence().toString());
     }
 
     ret.setName("Random DNA");
@@ -708,7 +719,7 @@ public class DnaModule extends CalcModule {
 
     for (GenomicRegion region : regions) {
       ret.add(
-          assembly.getSequence(genome, region, displayUpper, repeatMaskType));
+          assembly.getSequence(region, displayUpper, repeatMaskType));
     }
 
     return ret;
@@ -729,7 +740,7 @@ public class DnaModule extends CalcModule {
 
     GenomicRegion region = GenomicRegion.randomRegion(genome, length);
 
-    return assembly.getSequence(genome, region, displayUpper, repeatMaskType);
+    return assembly.getSequence(region, displayUpper, repeatMaskType);
   }
 
   private void revComp(String genome) {
