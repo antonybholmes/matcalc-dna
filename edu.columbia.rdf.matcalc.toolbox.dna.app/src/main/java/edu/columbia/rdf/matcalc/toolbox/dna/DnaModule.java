@@ -210,6 +210,8 @@ public class DnaModule extends CalcModule {
     int n = 200;
     int l = 200;
 
+    boolean uiMode = false;
+
     // first argument is type such as random
     String mode = args[0].toLowerCase(); // random
 
@@ -222,6 +224,7 @@ public class DnaModule extends CalcModule {
     Options options = new Options().add('f', "file", true)
         .add('g', "genome", true).add('m', "mode", true).add('n', "n", true)
         .add('l', "length", true).add('d', "genome-dir", true)
+        .add('u', "ui")
         .add('z', "zip-dir", true);
 
     CommandLineArgs cmdArgs = CommandLineArgs.parse(options, modArgs);
@@ -246,6 +249,8 @@ public class DnaModule extends CalcModule {
       case 'd':
         genomeDir = PathUtils.getPath(cmdArg.getValue());
         break;
+      case 'u':
+        uiMode = true;
       case 'z':
         zipDir = PathUtils.getPath(cmdArg.getValue());
         break;
@@ -262,20 +267,32 @@ public class DnaModule extends CalcModule {
       assembly = new ZipSequenceReader(zipDir);
     }
 
-    if (mode.startsWith("seq")) {
-      try {
-        cmdBed(genome, file, assembly);
-      } catch (IOException e) {
-        e.printStackTrace();
+    if (uiMode) {
+      if (mode.startsWith("seq")) {
+        try {
+          dna(genome);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
-    } else if (mode.startsWith("rand")) {
-      cmdRand(genome, l, n, assembly);
-    } else if (mode.startsWith("encode")) {
-      try {
-        Path outDir = genomeDir;
-        encode(genome, genomeDir, outDir);
-      } catch (IOException e) {
-        e.printStackTrace();
+    } else {
+      // command line
+
+      if (mode.startsWith("seq")) {
+        try {
+          cmdBed(genome, file, assembly);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      } else if (mode.startsWith("rand")) {
+        cmdRand(genome, l, n, assembly);
+      } else if (mode.startsWith("encode")) {
+        try {
+          Path outDir = genomeDir;
+          encode(genome, genomeDir, outDir);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
@@ -476,7 +493,7 @@ public class DnaModule extends CalcModule {
       }
     }
 
-    DnaDialog dialog = new DnaDialog(mWindow);
+    DnaDialog dialog = new DnaDialog(mWindow, genome);
 
     dialog.setVisible(true);
 
@@ -519,56 +536,6 @@ public class DnaModule extends CalcModule {
     //
 
     List<SequenceRegion> indelSequences = null;
-
-    /*
-     * if (mCheckIndels.isSelected()) { int refCol =
-     * TextUtils.findFirst(m.getColumnNames(), "Ref"); int obsCol =
-     * TextUtils.findFirst(m.getColumnNames(), "Obs");
-     * 
-     * if (refCol != -1 && obsCol != -1) { indelSequences = new
-     * ArrayList<SequenceRegion>(sequences.size());
-     * 
-     * for (int i = 0; i < m.getRowCount(); ++i) { GenomicRegion region =
-     * regions.get(i); GenomicRegion extRegion = extendedRegions.get(i);
-     * 
-     * // Where the the indel goes int offset = region.getStart() -
-     * extRegion.getStart();
-     * 
-     * SequenceRegion seq = sequences.get(i);
-     * 
-     * String bases = seq.getSequence();
-     * 
-     * // Remove the dash char String ref = m.getText(i, refCol); String obs =
-     * m.getText(i, obsCol);
-     * 
-     * StringBuilder buffer = new StringBuilder();
-     * 
-     * buffer.append(bases.substring(0, offset));
-     * 
-     * int start = extRegion.getStart(); int end = extRegion.getEnd();
-     * 
-     * if (ref.length() > obs.length()) { // deletion
-     * buffer.append(obs.replace("-", ""));
-     * 
-     * int l = ref.length() - obs.length() + 1;
-     * 
-     * // Add the rest of the sequence buffer.append(bases.substring(offset +
-     * ref.length()));
-     * 
-     * end -= l; } else if (ref.length() < obs.length()) { // insertion
-     * buffer.append(obs);
-     * 
-     * end += obs.length() - ref.length() + 1;
-     * 
-     * buffer.append(bases.substring(offset + 1)); } else { // mutation
-     * 
-     * buffer.append(obs);
-     * 
-     * buffer.append(bases.substring(offset + obs.length())); }
-     * 
-     * indelSequences.add(new SequenceRegion(new
-     * GenomicRegion(extRegion.getChr(), start, end), buffer.toString())); } } }
-     */
 
     // There were no indels so the sequences remain unchanged.
     if (indelSequences == null) {
@@ -623,7 +590,7 @@ public class DnaModule extends CalcModule {
   }
 
   private void randomDna() throws IOException {
-    RandomDnaDialog dialog = new RandomDnaDialog(mWindow);
+    RandomDnaDialog dialog = new RandomDnaDialog(mWindow, Genome.GRCH38);
 
     dialog.setVisible(true);
 
@@ -646,7 +613,7 @@ public class DnaModule extends CalcModule {
 
     for (String genome : genomes) {
       System.err.println(genome);
-      
+
       seqs.addAll(randomDna(genome,
           assembly,
           length,

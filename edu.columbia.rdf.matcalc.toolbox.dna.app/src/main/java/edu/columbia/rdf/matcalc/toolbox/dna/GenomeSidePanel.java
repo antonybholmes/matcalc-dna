@@ -34,7 +34,7 @@ public class GenomeSidePanel extends ModernComponent {
 
   private Map<CheckBox, SequenceReader> mCheckMap = new HashMap<CheckBox, SequenceReader>();
 
-  public GenomeSidePanel() {
+  public GenomeSidePanel(String genome) {
     setHeader(
         new ModernSubHeadingLabel(Bio.ASSET_GENOMES).bottomBorder(10));
 
@@ -46,29 +46,30 @@ public class GenomeSidePanel extends ModernComponent {
      * (IOException e) { e.printStackTrace(); } }
      */
 
-    for (String genome : SequenceReaderService.instance()) {
-      assemblyMap.put(genome, SequenceReaderService.instance().get(genome));
+    for (String g : SequenceReaderService.instance()) {
+      assemblyMap.put(g, SequenceReaderService.instance().get(g));
     }
 
     Box box = VBox.create();
 
     //ModernButtonGroup bg = new ModernButtonGroup();
 
-    boolean first = true;
+    //boolean first = true;
 
     // If two services provide the same genome, use the later.
-    for (String genome : assemblyMap) {
-      CheckBox checkBox = new ModernCheckSwitch(genome, first);
-      mCheckMap.put(checkBox, assemblyMap.get(genome));
+    for (String g : assemblyMap) {
+      CheckBox checkBox = new ModernCheckSwitch(g, g.equals(genome));
+      mCheckMap.put(checkBox, assemblyMap.get(g));
       //bg.add(checkBox);
       box.add(checkBox);
-      first = false;
     }
 
     setBody(new ModernScrollPane(box)
         .setHorizontalScrollBarPolicy(ScrollBarPolicy.NEVER));
     setBorder(DOUBLE_BORDER);
   }
+
+  
 
   public List<SequenceReader> getAssemblies() {
     List<SequenceReader> ret = new ArrayList<SequenceReader>(mCheckMap.size());

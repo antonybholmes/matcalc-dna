@@ -43,13 +43,15 @@ public class DnaDialog extends ModernDialogHelpWindow {
 
   private MaskCombo mMaskCombo = new MaskCombo();
 
-  private GenomeSidePanel mDnaPanel = new GenomeSidePanel();
+  private GenomeSidePanel mDnaPanel;
 
-  public DnaDialog(ModernWindow parent) {
+  public DnaDialog(ModernWindow parent, String genome) {
     super(parent, "dna.help.url");
 
     setTitle("DNA");
 
+    mDnaPanel = new GenomeSidePanel(genome);
+    
     createUi();
 
     setup();
