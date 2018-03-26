@@ -73,8 +73,8 @@ public class GenomeDownloadService implements Iterable<String> {
         try {
           mDownloadMap.put(name,
               new GenomeDownload(name,
-                  url.resolve(TextUtils.format("{}.chrs.gz", name)).toUrl(),
-                  url.resolve(TextUtils.format("{}.dna.zip", name)).toUrl()));
+                  url.resolve(TextUtils.format("{}.chrs.gz", name)).toURL(),
+                  url.resolve(TextUtils.format("{}.dna.zip", name)).toURL()));
         } catch (MalformedURLException | UnsupportedEncodingException e) {
           e.printStackTrace();
         }
