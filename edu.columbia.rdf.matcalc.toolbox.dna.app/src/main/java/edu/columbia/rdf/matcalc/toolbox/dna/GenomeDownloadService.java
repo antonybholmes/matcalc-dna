@@ -2,7 +2,6 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -75,7 +74,7 @@ public class GenomeDownloadService implements Iterable<String> {
               new GenomeDownload(name,
                   url.resolve(TextUtils.format("{}.chrs.gz", name)).toURL(),
                   url.resolve(TextUtils.format("{}.dna.zip", name)).toURL()));
-        } catch (MalformedURLException | UnsupportedEncodingException e) {
+        } catch (MalformedURLException e) {
           e.printStackTrace();
         }
       }

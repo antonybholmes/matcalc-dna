@@ -8,7 +8,7 @@
 	be merged.
 	-->
 	
-	<setting name="dna.remote-url" value="http://localhost:8080/dna2/api/v1" />
+	<setting name="dna.remote-url" value="http://localhost:8080/dna3/api/v1" />
 	<setting name="org.matcalc.toolbox.bio.dna.ext-5p" value="0" />
 	<setting name="org.matcalc.toolbox.bio.dna.ext-3p" value="0" />
 	<setting name="org.matcalc.toolbox.bio.dna.from-center" value="false" />

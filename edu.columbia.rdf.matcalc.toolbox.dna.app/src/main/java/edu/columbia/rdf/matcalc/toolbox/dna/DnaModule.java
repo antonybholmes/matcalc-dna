@@ -10,8 +10,8 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.Bio;
-import org.jebtk.bioinformatics.dna.URLSequenceReader;
-import org.jebtk.bioinformatics.dna.ZipSequenceReader;
+import org.jebtk.bioinformatics.dna.HttpSequenceReader;
+import org.jebtk.bioinformatics.dna.DirZipSequenceReader;
 import org.jebtk.bioinformatics.ext.ucsc.Bed;
 import org.jebtk.bioinformatics.ext.ucsc.UCSCTrackRegion;
 import org.jebtk.bioinformatics.genomic.Genome;
@@ -74,7 +74,7 @@ public class DnaModule extends CalcModule {
     if (SettingsService.getInstance()
         .getAsBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
       try {
-        SequenceReaderService.instance().add(new URLSequenceReader(new URL(
+        SequenceReaderService.instance().add(new HttpSequenceReader(new URL(
             SettingsService.getInstance().getAsString("dna.remote-url"))));
       } catch (IOException e) {
         e.printStackTrace();
@@ -85,7 +85,7 @@ public class DnaModule extends CalcModule {
     // GenomeAssemblyFS(Genome.GENOME_HOME));
 
     // Prefer local over web
-    SequenceReaderService.instance().add(new ZipSequenceReader());
+    //SequenceReaderService.instance().add(new DirZipSequenceReader());
   }
 
   @Override
@@ -259,12 +259,12 @@ public class DnaModule extends CalcModule {
 
     LOG.info("dna {}: {} {} {} {}", mode, genome, l, n, zipDir);
 
-    GenomeService.instance().setDir(genomeDir);
+    GenomeService.instance().addDir(genomeDir);
 
     SequenceReader assembly = null;
 
     if (zipDir != null) {
-      assembly = new ZipSequenceReader(zipDir);
+      assembly = new DirZipSequenceReader(zipDir);
     }
 
     if (uiMode) {

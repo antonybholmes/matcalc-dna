@@ -2,6 +2,6 @@
 <settings>
 	<!--  enable the DNA module -->
 	<setting name="org.matcalc.toolbox.bio.dna.web.enabled" value="true" />
-	<setting name="dna.remote-url" value="http://156.145.14.157:8080/dna2/api/v1/" />
+	<setting name="dna.remote-url" value="http://156.145.14.157:8080/dna3/api/v1/" />
 	
 </settings>
