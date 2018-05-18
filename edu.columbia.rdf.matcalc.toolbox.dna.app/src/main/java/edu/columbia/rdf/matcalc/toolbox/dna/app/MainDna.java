@@ -47,9 +47,9 @@ public class MainDna {
       ThemeService.getInstance().setTheme(ColorTheme.GREEN);
 
       MatCalcProperties props = new MatCalcProperties();
-      props.setProperty("matcalc.ui.files.enabled", false);
-      props.setProperty("matcalc.ui.left-tabs.enabled", false);
-      props.setProperty("matcalc.ui.right-tabs.enabled", false);
+      props.set("matcalc.ui.files.enabled", false);
+      props.set("matcalc.ui.left-tabs.enabled", false);
+      props.set("matcalc.ui.right-tabs.enabled", false);
       //props.setProperty("matcalc.ui.table.drop-shadow.enabled", false);
 
       MainMatCalc.main(new DnaInfo(), props);
