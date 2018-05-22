@@ -82,7 +82,7 @@ public class EncodeExt2Bit {
 
       int n = reader.next(buffer);
 
-      Chromosome chr = GenomeService.instance().chr(genome,
+      Chromosome chr = GenomeService.getInstance().chr(genome,
           reader.currentName());
 
       LOG.info("Creating {} in directory {}", chr, outDir);

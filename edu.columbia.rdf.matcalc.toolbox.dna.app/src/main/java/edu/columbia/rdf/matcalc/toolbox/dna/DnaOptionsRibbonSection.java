@@ -3,7 +3,7 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 import javax.swing.Box;
 
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
-import org.jebtk.modern.UIService;
+import org.jebtk.modern.AssetService;
 import org.jebtk.modern.button.ModernButtonGroup;
 import org.jebtk.modern.button.ModernCheckBox;
 import org.jebtk.modern.combobox.ModernComboBox2;
@@ -32,7 +32,7 @@ public class DnaOptionsRibbonSection extends RibbonSection
 
   private RibbonLargeCheckButton mCheckRevComp = new RibbonLargeCheckButton(
       "Reverse Complement",
-      UIService.getInstance().loadIcon("reverse_complement", 24),
+      AssetService.getInstance().loadIcon("reverse_complement", 24),
       "Reverse Complement", "Reverse complement DNA.");
 
   private ModernCompactSpinner mStartSpinner = new ModernCompactSpinner(0, 1000,
@@ -44,11 +44,11 @@ public class DnaOptionsRibbonSection extends RibbonSection
   private ModernCheckBox mCheckMutations = new ModernCheckBox("Mutations");
 
   private RibbonLargeRadioButton mCheckUppercase = new RibbonLargeRadioButton(
-      "Uppercase", UIService.getInstance().loadIcon("uppercase", 24), true,
+      "Uppercase", AssetService.getInstance().loadIcon("uppercase", 24), true,
       "Uppercase", "Display sequence in uppercase letters.");
 
   private RibbonLargeRadioButton mCheckLowercase = new RibbonLargeRadioButton(
-      "Lowercase", UIService.getInstance().loadIcon("lowercase", 24),
+      "Lowercase", AssetService.getInstance().loadIcon("lowercase", 24),
       "Lowercase", "Display sequence in lowercase letters.");
 
   private ModernComboBox2 mList = new MaskCombo();
@@ -57,7 +57,7 @@ public class DnaOptionsRibbonSection extends RibbonSection
     super(ribbon, "DNA");
 
     RibbonLargeButton mButton = new RibbonLargeButton("DNA",
-        UIService.getInstance().loadIcon(RunVectorIcon.class, 24), "DNA",
+        AssetService.getInstance().loadIcon(RunVectorIcon.class, 24), "DNA",
         "Extract the DNA for regions.");
     mButton.addClickListener(this);
 

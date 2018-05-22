@@ -11,7 +11,7 @@ import org.jebtk.bioinformatics.Bio;
 import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.ui.BioInfDialog;
 import org.jebtk.modern.UI;
-import org.jebtk.modern.UIService;
+import org.jebtk.modern.AssetService;
 import org.jebtk.modern.button.ModernButton;
 import org.jebtk.modern.dialog.ModernDialogFlatButton;
 import org.jebtk.modern.dialog.ModernDialogTaskWindow;
@@ -34,7 +34,7 @@ public class DnaOutputDialog extends ModernDialogTaskWindow
   private ModernClipboardTextArea mTextArea = new ModernClipboardTextArea();
 
   private ModernButton mSaveButton = new ModernDialogFlatButton(UI.MENU_SAVE,
-      UIService.getInstance().loadIcon(SaveVectorIcon.class, 16));
+      AssetService.getInstance().loadIcon(SaveVectorIcon.class, 16));
 
   private List<Sequence> mSequences;
 

@@ -35,7 +35,7 @@ public class GenomeDownloadService implements Iterable<String> {
    *
    * @return single instance of GenomeAssemblyService
    */
-  public static GenomeDownloadService instance() {
+  public static GenomeDownloadService getInstance() {
     return DownloadServiceLoader.INSTANCE;
   }
 
@@ -102,10 +102,10 @@ public class GenomeDownloadService implements Iterable<String> {
     for (int i = 0; i < json.size(); ++i) {
       Json dnaJson = json.get(i);
 
-      mDownloadMap.put(dnaJson.getAsString("name"),
-          new GenomeDownload(dnaJson.getAsString("name"),
-              new URL(dnaJson.getAsString("chrs")),
-              new URL(dnaJson.getAsString("dna"))));
+      mDownloadMap.put(dnaJson.getString("name"),
+          new GenomeDownload(dnaJson.getString("name"),
+              new URL(dnaJson.getString("chrs")),
+              new URL(dnaJson.getString("dna"))));
     }
   }
 

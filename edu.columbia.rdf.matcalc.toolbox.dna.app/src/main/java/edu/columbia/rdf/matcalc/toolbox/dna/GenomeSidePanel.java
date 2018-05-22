@@ -46,8 +46,8 @@ public class GenomeSidePanel extends ModernComponent {
      * (IOException e) { e.printStackTrace(); } }
      */
 
-    for (String g : SequenceReaderService.instance()) {
-      assemblyMap.put(g, SequenceReaderService.instance().get(g));
+    for (String g : SequenceReaderService.getInstance()) {
+      assemblyMap.put(g, SequenceReaderService.getInstance().get(g));
     }
 
     Box box = VBox.create();
@@ -71,7 +71,7 @@ public class GenomeSidePanel extends ModernComponent {
 
   
 
-  public List<SequenceReader> getAssemblies() {
+  public List<SequenceReader> getsemblies() {
     List<SequenceReader> ret = new ArrayList<SequenceReader>(mCheckMap.size());
 
     for (ModernTwoStateWidget button : mCheckMap.keySet()) {
@@ -83,8 +83,8 @@ public class GenomeSidePanel extends ModernComponent {
     return ret;
   }
 
-  public SequenceReader getAssembly() {
-    List<SequenceReader> assemblies = getAssemblies();
+  public SequenceReader getsembly() {
+    List<SequenceReader> assemblies = getsemblies();
 
     if (assemblies.size() > 0) {
       return assemblies.get(0);

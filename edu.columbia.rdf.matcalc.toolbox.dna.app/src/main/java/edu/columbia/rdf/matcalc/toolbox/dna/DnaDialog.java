@@ -59,11 +59,11 @@ public class DnaDialog extends ModernDialogHelpWindow {
 
   private void setup() {
     mExt5pSpinner.setValue(SettingsService.getInstance()
-        .getAsInt("org.matcalc.toolbox.bio.dna.ext-5p"));
+        .getInt("org.matcalc.toolbox.bio.dna.ext-5p"));
     mExt3pSpinner.setValue(SettingsService.getInstance()
-        .getAsInt("org.matcalc.toolbox.bio.dna.ext-3p"));
+        .getInt("org.matcalc.toolbox.bio.dna.ext-3p"));
     mCheckFromCenter.setSelected(SettingsService.getInstance()
-        .getAsBool("org.matcalc.toolbox.bio.dna.from-center"));
+        .getBool("org.matcalc.toolbox.bio.dna.from-center"));
 
     new ModernButtonGroup(mCheckUpper, mCheckLower);
 
@@ -166,7 +166,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
     return mDnaPanel.getGenome();
   }
 
-  public SequenceReader getAssembly() {
-    return mDnaPanel.getAssembly();
+  public SequenceReader getsembly() {
+    return mDnaPanel.getsembly();
   }
 }

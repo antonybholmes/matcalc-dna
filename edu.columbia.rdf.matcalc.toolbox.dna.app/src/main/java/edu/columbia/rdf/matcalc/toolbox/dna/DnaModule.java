@@ -36,7 +36,7 @@ import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
 import org.jebtk.modern.UI;
-import org.jebtk.modern.UIService;
+import org.jebtk.modern.AssetService;
 import org.jebtk.modern.dialog.ModernDialogStatus;
 import org.jebtk.modern.dialog.ModernMessageDialog;
 import org.jebtk.modern.event.ModernClickEvent;
@@ -72,20 +72,20 @@ public class DnaModule extends CalcModule {
     // of the module does not trigger them to be loaded repeatedly.
 
     if (SettingsService.getInstance()
-        .getAsBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
+        .getBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
       try {
-        SequenceReaderService.instance().add(new HttpSequenceReader(new URL(
-            SettingsService.getInstance().getAsString("dna.remote-url"))));
+        SequenceReaderService.getInstance().add(new HttpSequenceReader(new URL(
+            SettingsService.getInstance().getString("dna.remote-url"))));
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
 
-    // GenomeAssemblyService.instance().add(new
+    // GenomeAssemblyService.getInstance().add(new
     // GenomeAssemblyFS(Genome.GENOME_HOME));
 
     // Prefer local over web
-    //SequenceReaderService.instance().add(new DirZipSequenceReader());
+    //SequenceReaderService.getInstance().add(new DirZipSequenceReader());
   }
 
   @Override
@@ -105,7 +105,7 @@ public class DnaModule extends CalcModule {
     Ribbon ribbon = window.getRibbon();
 
     RibbonLargeButton button = new RibbonLargeButton(Bio.ASSET_DNA,
-        UIService.getInstance().loadIcon(RunVectorIcon.class, 24),
+        AssetService.getInstance().loadIcon(RunVectorIcon.class, 24),
         Bio.ASSET_DNA, "Extract the DNA for regions.");
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
@@ -130,7 +130,7 @@ public class DnaModule extends CalcModule {
     // ribbon.getToolbar("DNA").getSection("DNA").add(UI.createHGap(5));
 
     button = new RibbonLargeButton(
-        UIService.getInstance().loadIcon("rev_comp", 24),
+        AssetService.getInstance().loadIcon("rev_comp", 24),
         "Reverse Complement DNA", "Reverse Complement DNA.");
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
@@ -144,7 +144,7 @@ public class DnaModule extends CalcModule {
     });
 
     button = new RibbonLargeButton(
-        UIService.getInstance().loadIcon("random", 24), "Random DNA",
+        AssetService.getInstance().loadIcon("random", 24), "Random DNA",
         "Create random DNA sequences.");
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
@@ -163,7 +163,7 @@ public class DnaModule extends CalcModule {
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).addSeparator();
 
-    button = new RibbonLargeButton(UIService.getInstance().loadIcon("zip", 24),
+    button = new RibbonLargeButton(AssetService.getInstance().loadIcon("zip", 24),
         "Encode DNA", "Encode DNA.");
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
@@ -181,7 +181,7 @@ public class DnaModule extends CalcModule {
     });
 
     button = new RibbonLargeButton(
-        UIService.getInstance().loadIcon(DownloadVectorIcon.class, 24),
+        AssetService.getInstance().loadIcon(DownloadVectorIcon.class, 24),
         "Download", "Download prebuilt genomes.");
 
     ribbon.getToolbar(Bio.ASSET_DNA).getSection(Bio.ASSET_DNA).add(button);
@@ -259,7 +259,7 @@ public class DnaModule extends CalcModule {
 
     LOG.info("dna {}: {} {} {} {}", mode, genome, l, n, zipDir);
 
-    GenomeService.instance().addDir(genomeDir);
+    GenomeService.getInstance().addDir(genomeDir);
 
     SequenceReader assembly = null;
 
@@ -362,8 +362,8 @@ public class DnaModule extends CalcModule {
     Path out = encode(genome, dialog.getDir(), outDir);
 
     // Once encoded, invalidate the caches so that it can be discovered.
-    SequenceReaderService.instance().cache();
-    GenomeService.instance().cache();
+    SequenceReaderService.getInstance().cache();
+    GenomeService.getInstance().cache();
 
     ModernMessageDialog.createInformationDialog(mWindow,
         TextUtils.format("Genome {} was saved in", genome),
@@ -502,7 +502,7 @@ public class DnaModule extends CalcModule {
     }
 
     genome = dialog.getGenome();
-    SequenceReader assembly = dialog.getAssembly();
+    SequenceReader assembly = dialog.getsembly();
 
     StatusService.getInstance().setStatus("Extending regions...");
     LOG.info("Extending regions...");
@@ -599,7 +599,7 @@ public class DnaModule extends CalcModule {
     }
 
     List<String> genomes = dialog.getGenomes();
-    SequenceReader assembly = dialog.getAssembly();
+    SequenceReader assembly = dialog.getsembly();
 
     RepeatMaskType repeatMaskType = dialog.getRepeatMaskType(); // mDnaSection.getRepeatMaskType();
 
