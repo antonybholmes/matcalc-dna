@@ -502,7 +502,7 @@ public class DnaModule extends CalcModule {
     }
 
     genome = dialog.getGenome();
-    SequenceReader assembly = dialog.getsembly();
+    SequenceReader assembly = dialog.getAssembly();
 
     StatusService.getInstance().setStatus("Extending regions...");
     LOG.info("Extending regions...");
@@ -599,7 +599,7 @@ public class DnaModule extends CalcModule {
     }
 
     List<String> genomes = dialog.getGenomes();
-    SequenceReader assembly = dialog.getsembly();
+    SequenceReader assembly = dialog.getAssembly();
 
     RepeatMaskType repeatMaskType = dialog.getRepeatMaskType(); // mDnaSection.getRepeatMaskType();
 

@@ -166,7 +166,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
     return mDnaPanel.getGenome();
   }
 
-  public SequenceReader getsembly() {
-    return mDnaPanel.getsembly();
+  public SequenceReader getAssembly() {
+    return mDnaPanel.getAssembly();
   }
 }

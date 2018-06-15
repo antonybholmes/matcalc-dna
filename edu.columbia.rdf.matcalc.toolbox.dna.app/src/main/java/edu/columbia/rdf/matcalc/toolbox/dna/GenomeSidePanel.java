@@ -83,7 +83,7 @@ public class GenomeSidePanel extends ModernComponent {
     return ret;
   }
 
-  public SequenceReader getsembly() {
+  public SequenceReader getAssembly() {
     List<SequenceReader> assemblies = getsemblies();
 
     if (assemblies.size() > 0) {
