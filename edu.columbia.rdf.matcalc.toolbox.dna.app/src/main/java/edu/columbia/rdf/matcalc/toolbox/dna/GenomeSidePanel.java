@@ -9,7 +9,7 @@ import javax.swing.Box;
 
 import org.jebtk.bioinformatics.Bio;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
-import org.jebtk.bioinformatics.genomic.SequenceReaderService;
+import org.jebtk.bioinformatics.genomic.SequenceService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
@@ -41,13 +41,13 @@ public class GenomeSidePanel extends ModernComponent {
     IterMap<String, SequenceReader> assemblyMap = new IterTreeMap<String, SequenceReader>();
 
     /*
-     * for (GenomeAssembly a : DnaService.getInstance()) { try { for (String
+     * for (GenomeAssembly a : SequenceService.getInstance()) { try { for (String
      * genome : a.getGenomes()) { assemblyMap.put(genome, a); } } catch
      * (IOException e) { e.printStackTrace(); } }
      */
 
-    for (String g : SequenceReaderService.getInstance()) {
-      assemblyMap.put(g, SequenceReaderService.getInstance().get(g));
+    for (String g : SequenceService.getInstance()) {
+      assemblyMap.put(g, SequenceService.getInstance().get(g));
     }
 
     Box box = VBox.create();

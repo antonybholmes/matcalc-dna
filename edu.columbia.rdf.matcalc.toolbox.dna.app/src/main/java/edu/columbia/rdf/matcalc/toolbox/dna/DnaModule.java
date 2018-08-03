@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jebtk.bioinformatics.Bio;
-import org.jebtk.bioinformatics.dna.HttpSequenceReader;
+import org.jebtk.bioinformatics.dna.WebSequenceReader;
 import org.jebtk.bioinformatics.dna.DirZipSequenceReader;
 import org.jebtk.bioinformatics.ext.ucsc.Bed;
 import org.jebtk.bioinformatics.ext.ucsc.UCSCTrackRegion;
@@ -20,7 +20,7 @@ import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
-import org.jebtk.bioinformatics.genomic.SequenceReaderService;
+import org.jebtk.bioinformatics.genomic.SequenceService;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
 import org.jebtk.core.Range;
 import org.jebtk.core.cli.CommandLineArg;
@@ -74,8 +74,7 @@ public class DnaModule extends CalcModule {
     if (SettingsService.getInstance()
         .getBool("org.matcalc.toolbox.bio.dna.web.enabled")) {
       try {
-        SequenceReaderService.getInstance().add(new HttpSequenceReader(new URL(
-            SettingsService.getInstance().getString("dna.remote-url"))));
+        SequenceService.getInstance().add(new WebSequenceReader(SettingsService.getInstance().getUrl("dna.remote-url")));
       } catch (IOException e) {
         e.printStackTrace();
       }
@@ -362,7 +361,7 @@ public class DnaModule extends CalcModule {
     Path out = encode(genome, dialog.getDir(), outDir);
 
     // Once encoded, invalidate the caches so that it can be discovered.
-    SequenceReaderService.getInstance().cache();
+    SequenceService.getInstance().cache();
     GenomeService.getInstance().cache();
 
     ModernMessageDialog.createInformationDialog(mWindow,
