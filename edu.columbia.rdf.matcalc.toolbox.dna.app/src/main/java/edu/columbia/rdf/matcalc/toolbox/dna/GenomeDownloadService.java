@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -13,11 +14,11 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
+import org.jebtk.core.http.UrlBuilder;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.json.Json;
 import org.jebtk.core.json.JsonParser;
-import org.jebtk.core.network.UrlBuilder;
 import org.jebtk.core.text.TextUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +26,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class GenomeDownloadService implements Iterable<String> {
+public class GenomeDownloadService implements Iterable<Entry<String, GenomeDownload>> {
   private static class DownloadServiceLoader {
     private static final GenomeDownloadService INSTANCE = new GenomeDownloadService();
   }
@@ -149,7 +150,7 @@ public class GenomeDownloadService implements Iterable<String> {
   }
 
   @Override
-  public Iterator<String> iterator() {
+  public Iterator<Entry<String, GenomeDownload>> iterator() {
     try {
       autoLoad();
     } catch (IOException e) {

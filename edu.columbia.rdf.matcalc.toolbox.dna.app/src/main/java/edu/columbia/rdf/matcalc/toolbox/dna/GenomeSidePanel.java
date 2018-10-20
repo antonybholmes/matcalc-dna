@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.Box;
 
@@ -46,8 +47,8 @@ public class GenomeSidePanel extends ModernComponent {
      * (IOException e) { e.printStackTrace(); } }
      */
 
-    for (String g : SequenceService.getInstance()) {
-      assemblyMap.put(g, SequenceService.getInstance().get(g));
+    for (Entry<String, SequenceReader> item : SequenceService.getInstance()) {
+      assemblyMap.put(item.getKey(), item.getValue());
     }
 
     Box box = VBox.create();
@@ -57,9 +58,9 @@ public class GenomeSidePanel extends ModernComponent {
     //boolean first = true;
 
     // If two services provide the same genome, use the later.
-    for (String g : assemblyMap) {
-      CheckBox checkBox = new ModernCheckSwitch(g, g.equals(genome));
-      mCheckMap.put(checkBox, assemblyMap.get(g));
+    for (Entry<String, SequenceReader> item : assemblyMap) {
+      CheckBox checkBox = new ModernCheckSwitch(item.getKey(), item.getKey().equals(genome));
+      mCheckMap.put(checkBox, item.getValue());
       //bg.add(checkBox);
       box.add(checkBox);
     }
