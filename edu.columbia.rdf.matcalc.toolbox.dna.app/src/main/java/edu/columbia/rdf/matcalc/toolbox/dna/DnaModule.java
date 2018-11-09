@@ -382,7 +382,7 @@ public class DnaModule extends CalcModule {
 
     Bed bed = Bed.parseBedGraph(file);
 
-    List<UCSCTrackRegion> regions = CollectionUtils.sort(bed.getRegions());
+    List<UCSCTrackRegion> regions = CollectionUtils.sort(bed.getElements());
 
     cmdOutputSeqs(genome, regions, assembly);
   }
