@@ -1,31 +1,30 @@
 package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.Bio;
-import org.jebtk.bioinformatics.dna.WebSequenceReader;
 import org.jebtk.bioinformatics.dna.DirZipSequenceReader;
+import org.jebtk.bioinformatics.dna.WebSequenceReader;
 import org.jebtk.bioinformatics.ext.ucsc.Bed;
-import org.jebtk.bioinformatics.ext.ucsc.UCSCTrackRegion;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
-import org.jebtk.bioinformatics.genomic.SequenceService;
 import org.jebtk.bioinformatics.genomic.SequenceRegion;
+import org.jebtk.bioinformatics.genomic.SequenceService;
 import org.jebtk.core.Range;
-import org.jebtk.core.cli.CommandLineArg;
-import org.jebtk.core.cli.CommandLineArgs;
-import org.jebtk.core.cli.Options;
+import org.jebtk.core.cli.ArgParser;
+import org.jebtk.core.cli.Args;
 import org.jebtk.core.collections.CollectionUtils;
 import org.jebtk.core.http.URLUtils;
 import org.jebtk.core.io.FileUtils;
@@ -35,8 +34,8 @@ import org.jebtk.core.sys.SysUtils;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
-import org.jebtk.modern.UI;
 import org.jebtk.modern.AssetService;
+import org.jebtk.modern.UI;
 import org.jebtk.modern.dialog.ModernDialogStatus;
 import org.jebtk.modern.dialog.ModernMessageDialog;
 import org.jebtk.modern.event.ModernClickEvent;
@@ -200,7 +199,7 @@ public class DnaModule extends CalcModule {
 
   @Override
   public void run(String... args) {
-    String genome = Genome.GRCH38;
+    Genome genome = Genome.GRCH38;
 
     Path zipDir = PathUtils.getPwd();
     Path genomeDir = PathUtils.getPwd();
@@ -220,38 +219,38 @@ public class DnaModule extends CalcModule {
 
     System.err.println(Arrays.toString(modArgs));
 
-    Options options = new Options().add('f', "file", true)
+    Args options = new Args().add('f', "file", true)
         .add('g', "genome", true).add('m', "mode", true).add('n', "n", true)
         .add('l', "length", true).add('d', "genome-dir", true)
         .add('u', "ui")
         .add('z', "zip-dir", true);
 
-    CommandLineArgs cmdArgs = CommandLineArgs.parse(options, modArgs);
+    ArgParser cmdArgs = new ArgParser(options).parse(modArgs);
 
-    for (CommandLineArg cmdArg : cmdArgs) {
-      switch (cmdArg.getShortName()) {
-      case 'f':
-        file = PathUtils.getPath(cmdArg.getValue());
+    for (Entry<String, List<String>> cmdArg : cmdArgs) {
+      switch (cmdArg.getKey()) {
+      case "file":
+        file = PathUtils.getPath(cmdArg.getValue().get(0));
         break;
-      case 'm':
-        mode = cmdArg.getValue();
+      case "mode":
+        mode = cmdArg.getValue().get(0);
         break;
-      case 'n':
-        n = cmdArg.getIntValue();
+      case "n":
+        n = Integer.parseInt(cmdArg.getValue().get(0));
         break;
-      case 'l':
-        l = cmdArg.getIntValue();
+      case "l":
+        l = Integer.parseInt(cmdArg.getValue().get(0));
         break;
-      case 'g':
-        genome = cmdArg.getValue();
+      case "g":
+        genome = GenomeService.getInstance().guessGenome(cmdArg.getValue().get(0));
         break;
-      case 'd':
-        genomeDir = PathUtils.getPath(cmdArg.getValue());
+      case "d":
+        genomeDir = PathUtils.getPath(cmdArg.getValue().get(0));
         break;
-      case 'u':
+      case "u":
         uiMode = true;
-      case 'z':
-        zipDir = PathUtils.getPath(cmdArg.getValue());
+      case "z":
+        zipDir = PathUtils.getPath(cmdArg.getValue().get(0));
         break;
       }
     }
@@ -354,9 +353,9 @@ public class DnaModule extends CalcModule {
       return;
     }
 
-    String genome = dialog.getGenome();
+    Genome genome = GenomeService.getInstance().guessGenome(dialog.getGenome());
 
-    Path outDir = Genome.GENOME_DIR.resolve(genome);
+    Path outDir = Genome.GENOME_DIR.resolve(genome.getAssembly());
 
     Path out = encode(genome, dialog.getDir(), outDir);
 
@@ -369,25 +368,25 @@ public class DnaModule extends CalcModule {
         TextUtils.truncateCenter(PathUtils.toString(out), 70));
   }
 
-  private static Path encode(String genome, Path dir, Path outDir)
+  private static Path encode(Genome genome, Path dir, Path outDir)
       throws IOException {
     return EncodeExt2Bit.encodeGenome(genome, dir, outDir);
   }
 
-  private static void cmdBed(String genome, Path file, SequenceReader assembly)
+  private static void cmdBed(Genome genome, Path file, SequenceReader assembly)
       throws IOException {
     if (file == null) {
       return;
     }
 
-    Bed bed = Bed.parseBedGraph(file);
+    Bed bed = Bed.parseBedGraph("bedgraph", file);
 
-    List<UCSCTrackRegion> regions = CollectionUtils.sort(bed.getElements());
+    List<GenomicElement> regions = CollectionUtils.sort(bed.getElements().toList());
 
     cmdOutputSeqs(genome, regions, assembly);
   }
 
-  private static void cmdRand(String genome,
+  private static void cmdRand(Genome genome,
       int l,
       int n,
       SequenceReader assembly) {
@@ -409,7 +408,7 @@ public class DnaModule extends CalcModule {
     }
   }
 
-  private static void cmdOutputSeqs(String genome,
+  private static void cmdOutputSeqs(Genome genome,
       List<? extends GenomicRegion> regions,
       SequenceReader assembly) throws IOException {
     for (GenomicRegion region : regions) {
@@ -427,7 +426,7 @@ public class DnaModule extends CalcModule {
    * @throws IOException
    * @throws ParseException
    */
-  private void dna(String genome) throws IOException {
+  private void dna(Genome genome) throws IOException {
     /*
      * List<Integer> columns = mWindow.getSelectedColumns();
      * 
@@ -478,13 +477,13 @@ public class DnaModule extends CalcModule {
         if (endCol != -1) {
           regions.add(GenomicRegion.parse(genome,
               m.getText(i, chrCol),
-              m.getText(i, startCol),
-              m.getText(i, endCol)));
+              Integer.parseInt(m.getText(i, startCol)),
+              Integer.parseInt(m.getText(i, endCol))));
         } else {
           // Same start and end
-
-          regions.add(GenomicRegion.parse(m.getText(i, chrCol),
-              m.getText(i, startCol)));
+          int s = Integer.parseInt(m.getText(i, startCol));
+          
+          regions.add(GenomicRegion.parse(genome, m.getText(i, chrCol), s, s));
 
           System.err.println(regions.get(regions.size() - 1).getChr() + " "
               + regions.get(regions.size() - 1).getStart());
@@ -500,7 +499,7 @@ public class DnaModule extends CalcModule {
       return;
     }
 
-    genome = dialog.getGenome();
+    genome = GenomeService.getInstance().guessGenome(dialog.getGenome());
     SequenceReader assembly = dialog.getAssembly();
 
     StatusService.getInstance().setStatus("Extending regions...");
@@ -613,7 +612,7 @@ public class DnaModule extends CalcModule {
     for (String genome : genomes) {
       System.err.println(genome);
 
-      seqs.addAll(randomDna(genome,
+      seqs.addAll(randomDna(GenomeService.getInstance().guessGenome(genome),
           assembly,
           length,
           n,
@@ -652,7 +651,7 @@ public class DnaModule extends CalcModule {
     mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
   }
 
-  private static List<SequenceRegion> randomDna(String genome,
+  private static List<SequenceRegion> randomDna(Genome genome,
       SequenceReader assembly,
       int length,
       int n) throws IOException {
@@ -664,7 +663,7 @@ public class DnaModule extends CalcModule {
         RepeatMaskType.LOWERCASE);
   }
 
-  private static List<SequenceRegion> randomDna(String genome,
+  private static List<SequenceRegion> randomDna(Genome genome,
       SequenceReader assembly,
       int length,
       int n,
@@ -691,13 +690,13 @@ public class DnaModule extends CalcModule {
     return ret;
   }
 
-  private static SequenceRegion randomDna(String genome,
+  private static SequenceRegion randomDna(Genome genome,
       SequenceReader assembly,
       int length) throws IOException {
     return randomDna(genome, assembly, length, true, RepeatMaskType.LOWERCASE);
   }
 
-  private static SequenceRegion randomDna(String genome,
+  private static SequenceRegion randomDna(Genome genome,
       SequenceReader assembly,
       int length,
       boolean displayUpper,
@@ -709,7 +708,7 @@ public class DnaModule extends CalcModule {
     return assembly.getSequence(region, displayUpper, repeatMaskType);
   }
 
-  private void revComp(String genome) {
+  private void revComp(Genome genome) {
     DataFrame m = mWindow.getCurrentMatrix();
 
     List<Sequence> sequences = FastaWriterModule.toSequences(mWindow, m);
@@ -726,7 +725,7 @@ public class DnaModule extends CalcModule {
   }
 
   public static List<GenomicRegion> toRegions(final MainMatCalcWindow window,
-      String genome,
+      Genome genome,
       final DataFrame m) {
 
     int c1 = DataFrame.findColumn(m, Bio.ASSET_DNA_LOCATION);

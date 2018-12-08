@@ -3,6 +3,7 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 import javax.swing.Box;
 
 import org.jebtk.bioinformatics.Bio;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.core.settings.SettingsService;
@@ -45,7 +46,7 @@ public class DnaDialog extends ModernDialogHelpWindow {
 
   private GenomeSidePanel mDnaPanel;
 
-  public DnaDialog(ModernWindow parent, String genome) {
+  public DnaDialog(ModernWindow parent, Genome genome) {
     super(parent, "dna.help.url");
 
     setTitle("DNA");

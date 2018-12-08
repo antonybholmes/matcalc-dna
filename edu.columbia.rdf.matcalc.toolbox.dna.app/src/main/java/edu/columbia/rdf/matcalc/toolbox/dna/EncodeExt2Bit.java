@@ -8,9 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.jebtk.bioinformatics.FastaReader;
 import org.jebtk.bioinformatics.genomic.Chromosome;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
@@ -63,7 +65,7 @@ public class EncodeExt2Bit {
 
   private static final String DNA_EXT = ".dna.2bit";
 
-  public static Path encodeGenome(String genome, Path dir, Path outDir)
+  public static Path encodeGenome(Genome genome, Path dir, Path outDir)
       throws IOException {
     // Path dir = file.toAbsolutePath().getParent();
 
@@ -223,26 +225,26 @@ public class EncodeExt2Bit {
     return out;
   }
 
-  private static void writeChrs(String genome,
+  private static void writeChrs(Genome genome,
       IterMap<Chromosome, Integer> sizeMap,
       Path dir) throws IOException {
     BufferedWriter writer = FileUtils
         .newBufferedWriter(dir.resolve(genome + ".chrs.gz"));
 
     try {
-      writer.write(genome);
+      writer.write(genome.getAssembly());
       writer.newLine();
-      writer.write(genome);
+      writer.write(genome.getAssembly());
       writer.newLine();
       writer.write("id\tchr\tsize");
       writer.newLine();
 
-      for (Chromosome chr : sizeMap) {
-        writer.write(Integer.toString(chr.getId()));
+      for (Entry<Chromosome, Integer> item : sizeMap) {
+        writer.write(Integer.toString(item.getKey().getId()));
         writer.write(TextUtils.TAB_DELIMITER);
-        writer.write(chr.toString());
+        writer.write(item.getKey().toString());
         writer.write(TextUtils.TAB_DELIMITER);
-        writer.write(Integer.toString(sizeMap.get(chr)));
+        writer.write(Integer.toString(item.getValue()));
         writer.newLine();
       }
     } finally {

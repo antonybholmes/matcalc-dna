@@ -9,15 +9,14 @@ import java.util.Map.Entry;
 import javax.swing.Box;
 
 import org.jebtk.bioinformatics.Bio;
+import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
 import org.jebtk.bioinformatics.genomic.SequenceService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.modern.ModernComponent;
 import org.jebtk.modern.button.CheckBox;
-import org.jebtk.modern.button.ModernButtonGroup;
 import org.jebtk.modern.button.ModernCheckSwitch;
-import org.jebtk.modern.button.ModernRadioButton;
 import org.jebtk.modern.panel.VBox;
 import org.jebtk.modern.scrollpane.ModernScrollPane;
 import org.jebtk.modern.scrollpane.ScrollBarPolicy;
@@ -35,11 +34,12 @@ public class GenomeSidePanel extends ModernComponent {
 
   private Map<CheckBox, SequenceReader> mCheckMap = new HashMap<CheckBox, SequenceReader>();
 
-  public GenomeSidePanel(String genome) {
+  public GenomeSidePanel(Genome genome) {
     setHeader(
         new ModernSubHeadingLabel(Bio.ASSET_GENOMES).bottomBorder(10));
 
-    IterMap<String, SequenceReader> assemblyMap = new IterTreeMap<String, SequenceReader>();
+    IterMap<Genome, SequenceReader> assemblyMap = 
+        new IterTreeMap<Genome, SequenceReader>();
 
     /*
      * for (GenomeAssembly a : SequenceService.getInstance()) { try { for (String
@@ -47,7 +47,7 @@ public class GenomeSidePanel extends ModernComponent {
      * (IOException e) { e.printStackTrace(); } }
      */
 
-    for (Entry<String, SequenceReader> item : SequenceService.getInstance()) {
+    for (Entry<Genome, SequenceReader> item : SequenceService.getInstance()) {
       assemblyMap.put(item.getKey(), item.getValue());
     }
 
@@ -58,8 +58,8 @@ public class GenomeSidePanel extends ModernComponent {
     //boolean first = true;
 
     // If two services provide the same genome, use the later.
-    for (Entry<String, SequenceReader> item : assemblyMap) {
-      CheckBox checkBox = new ModernCheckSwitch(item.getKey(), item.getKey().equals(genome));
+    for (Entry<Genome, SequenceReader> item : assemblyMap) {
+      CheckBox checkBox = new ModernCheckSwitch(item.getKey().getAssembly(), item.getKey().equals(genome));
       mCheckMap.put(checkBox, item.getValue());
       //bg.add(checkBox);
       box.add(checkBox);
