@@ -53,10 +53,10 @@ import edu.columbia.rdf.matcalc.MainMatCalcWindow;
 import edu.columbia.rdf.matcalc.OpenMode;
 import edu.columbia.rdf.matcalc.bio.FastaReaderModule;
 import edu.columbia.rdf.matcalc.bio.FastaWriterModule;
-import edu.columbia.rdf.matcalc.toolbox.CalcModule;
+import edu.columbia.rdf.matcalc.toolbox.Module;
 import edu.columbia.rdf.matcalc.toolbox.dna.app.DnaInfo;
 
-public class DnaModule extends CalcModule {
+public class DnaModule extends Module {
   public static final Logger LOG = LoggerFactory.getLogger(DnaModule.class);
 
   private MainMatCalcWindow mWindow;
@@ -582,7 +582,7 @@ public class DnaModule extends CalcModule {
       ret.set(i, n + 4, opts);
     }
 
-    mWindow.addToHistory("Extract DNA", ret);
+    mWindow.history().addToHistory("Extract DNA", ret);
 
     StatusService.getInstance().setReady();
   }
@@ -648,7 +648,7 @@ public class DnaModule extends CalcModule {
 
     ret.setName("Random DNA");
 
-    mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
+    mWindow.openMatrices().openMode(OpenMode.NEW_WINDOW).open(ret);
   }
 
   private static List<SequenceRegion> randomDna(Genome genome,
@@ -721,7 +721,7 @@ public class DnaModule extends CalcModule {
 
     ret.setName(Bio.ASSET_REV_COMP);
 
-    mWindow.openMatrix(ret, OpenMode.NEW_WINDOW);
+    mWindow.openMatrices().openMode(OpenMode.NEW_WINDOW).open(ret);
   }
 
   public static List<GenomicRegion> toRegions(final MainMatCalcWindow window,
