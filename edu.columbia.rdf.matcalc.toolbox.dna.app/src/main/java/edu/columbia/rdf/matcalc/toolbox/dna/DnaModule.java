@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
@@ -30,7 +29,6 @@ import org.jebtk.core.http.URLUtils;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.settings.SettingsService;
-import org.jebtk.core.sys.SysUtils;
 import org.jebtk.core.text.Join;
 import org.jebtk.core.text.TextUtils;
 import org.jebtk.math.matrix.DataFrame;
@@ -61,10 +59,8 @@ public class DnaModule extends Module {
 
   private MainMatCalcWindow mWindow;
 
-  // private DnaOptionsRibbonSection mDnaSection =
-  // new DnaOptionsRibbonSection();
-
-  // private ModernCheckBox mCheckIndels = new ModernCheckBox("Indels");
+  private static final Args ARGS = new Args();
+  
 
   static {
     // We only want to load the assemblies once so that each invocation
@@ -78,12 +74,27 @@ public class DnaModule extends Module {
         e.printStackTrace();
       }
     }
+    
+    ARGS.add('s', "switch-tab")
+    .add('f', "file", true)
+    .add('g', "genome", true)
+    .add('m', "mode", true)
+    .add('n', "n", true)
+    .add('l', "length", true)
+    .add('d', "genome-dir", true)
+    .add('u', "ui")
+    .add('z', "zip-dir", true);
 
     // GenomeAssemblyService.getInstance().add(new
     // GenomeAssemblyFS(Genome.GENOME_HOME));
 
     // Prefer local over web
     //SequenceReaderService.getInstance().add(new DirZipSequenceReader());
+  }
+  
+  @Override
+  public Args getArgs() {
+    return ARGS;
   }
 
   @Override
@@ -198,7 +209,7 @@ public class DnaModule extends Module {
   }
 
   @Override
-  public void run(String... args) {
+  public void run(ArgParser ap) {
     Genome genome = Genome.GRCH38;
 
     Path zipDir = PathUtils.getPwd();
@@ -210,24 +221,9 @@ public class DnaModule extends Module {
 
     boolean uiMode = false;
 
-    // first argument is type such as random
-    String mode = args[0].toLowerCase(); // random
+    String mode = "random";
 
-    // all other arguments are interpreted as standard posix
-    String[] modArgs = new String[args.length - 1];
-    SysUtils.arraycopy(args, 1, modArgs);
-
-    System.err.println(Arrays.toString(modArgs));
-
-    Args options = new Args().add('f', "file", true)
-        .add('g', "genome", true).add('m', "mode", true).add('n', "n", true)
-        .add('l', "length", true).add('d', "genome-dir", true)
-        .add('u', "ui")
-        .add('z', "zip-dir", true);
-
-    ArgParser cmdArgs = new ArgParser(options).parse(modArgs);
-
-    for (Entry<String, List<String>> cmdArg : cmdArgs) {
+    for (Entry<String, List<String>> cmdArg : ap) {
       switch (cmdArg.getKey()) {
       case "file":
         file = PathUtils.getPath(cmdArg.getValue().get(0));

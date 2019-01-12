@@ -26,7 +26,7 @@ import org.jebtk.modern.widget.ModernTwoStateWidget;
 /**
  * Control which conservation scores are shown.
  * 
- * @author Antony Holmes Holmes
+ * @author Antony Holmes
  *
  */
 public class GenomeSidePanel extends ModernComponent {
