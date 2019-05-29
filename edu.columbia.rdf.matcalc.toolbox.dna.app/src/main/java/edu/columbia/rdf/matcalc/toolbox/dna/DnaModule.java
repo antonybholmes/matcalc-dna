@@ -16,6 +16,7 @@ import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
 import org.jebtk.bioinformatics.genomic.GenomicRegion;
+import org.jebtk.bioinformatics.genomic.GenomicType;
 import org.jebtk.bioinformatics.genomic.RepeatMaskType;
 import org.jebtk.bioinformatics.genomic.Sequence;
 import org.jebtk.bioinformatics.genomic.SequenceReader;
@@ -375,7 +376,7 @@ public class DnaModule extends Module {
       return;
     }
 
-    Bed bed = Bed.parseBedGraph("bedgraph", file);
+    Bed bed = Bed.parseBedGraph(GenomicType.REGION, file);
 
     List<GenomicElement> regions = CollectionUtils.sort(bed.getElements().toList());
 
