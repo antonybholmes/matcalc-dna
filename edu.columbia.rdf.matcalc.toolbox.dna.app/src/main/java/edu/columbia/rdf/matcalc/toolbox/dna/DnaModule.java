@@ -12,6 +12,7 @@ import org.jebtk.bioinformatics.Bio;
 import org.jebtk.bioinformatics.dna.DirZipSequenceReader;
 import org.jebtk.bioinformatics.dna.WebSequenceReader;
 import org.jebtk.bioinformatics.ext.ucsc.Bed;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.bioinformatics.genomic.Genome;
 import org.jebtk.bioinformatics.genomic.GenomeService;
 import org.jebtk.bioinformatics.genomic.GenomicElement;
@@ -254,7 +255,7 @@ public class DnaModule extends Module {
 
     LOG.info("dna {}: {} {} {} {}", mode, genome, l, n, zipDir);
 
-    GenomeService.getInstance().addDir(genomeDir);
+    ChromosomeService.getInstance().addDir(genomeDir);
 
     SequenceReader assembly = null;
 
@@ -358,7 +359,7 @@ public class DnaModule extends Module {
 
     // Once encoded, invalidate the caches so that it can be discovered.
     SequenceService.getInstance().cache();
-    GenomeService.getInstance().cache();
+    ChromosomeService.getInstance().cache();
 
     ModernMessageDialog.createInformationDialog(mWindow,
         TextUtils.format("Genome {} was saved in", genome),
@@ -474,8 +475,8 @@ public class DnaModule extends Module {
         if (endCol != -1) {
           regions.add(GenomicRegion.parse(genome,
               m.getText(i, chrCol),
-              Integer.parseInt(m.getText(i, startCol)),
-              Integer.parseInt(m.getText(i, endCol))));
+              m.getInt(i, startCol), //Integer.parseInt(m.getText(i, startCol)),
+              m.getInt(i, endCol))); //Integer.parseInt(m.getText(i, endCol))));
         } else {
           // Same start and end
           int s = Integer.parseInt(m.getText(i, startCol));
@@ -622,7 +623,7 @@ public class DnaModule extends Module {
     DataFrame ret = DataFrame.createDataFrame(t, 5);
 
     ret.setColumnName(0, Bio.ASSET_GENOME);
-    ret.setColumnName(0, Bio.ASSET_DNA_LOCATION);
+    ret.setColumnName(0, Bio.ASSET_GENOMIC_LOCATION);
     ret.setColumnName(1, Bio.ASSET_LEN_BP);
     ret.setColumnName(2, UI.ASSET_OPTIONS);
     ret.setColumnName(3, Bio.ASSET_DNA_SEQUENCE);
@@ -710,11 +711,13 @@ public class DnaModule extends Module {
 
     List<Sequence> sequences = FastaWriterModule.toSequences(mWindow, m);
 
-    List<Sequence> revComp = Sequence.reverseComplement(sequences);
+    List<Sequence> revComps = Sequence.reverseComplement(sequences);
 
     List<GenomicRegion> regions = toRegions(mWindow, genome, m);
+    
+    System.err.println("rev " + regions);
 
-    DataFrame ret = FastaReaderModule.toMatrix(genome, regions, revComp);
+    DataFrame ret = FastaReaderModule.toMatrix(genome, regions, revComps);
 
     ret.setName(Bio.ASSET_REV_COMP);
 

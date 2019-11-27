@@ -11,10 +11,11 @@ import org.jebtk.modern.ColorTheme;
 import org.jebtk.modern.theme.ThemeService;
 import org.xml.sax.SAXException;
 
-import edu.columbia.rdf.matcalc.CoreModuleLoader;
 import edu.columbia.rdf.matcalc.MainMatCalc;
 import edu.columbia.rdf.matcalc.MatCalcProperties;
+import edu.columbia.rdf.matcalc.ModuleLoader;
 import edu.columbia.rdf.matcalc.ModuleService;
+import edu.columbia.rdf.matcalc.bio.BioModuleLoader;
 import edu.columbia.rdf.matcalc.bio.FastaReaderModule;
 import edu.columbia.rdf.matcalc.bio.FastaWriterModule;
 import edu.columbia.rdf.matcalc.bio.toolbox.external.ucsc.BedGraphIOModule;
@@ -28,15 +29,15 @@ public class MainDna {
       UnsupportedLookAndFeelException {
     AppService.getInstance().setAppInfo("dna");
 
-    // ModuleLoader ml = new BioModuleLoader().addModule(DnaModule.class);
+    ModuleLoader ml = new BioModuleLoader().addModule(DnaModule.class);
 
     // ModuleService.getInstance().add(new BioModuleLoader());
-    ModuleService.getInstance().add(DnaModule.class);
-    ModuleService.getInstance().add(new CoreModuleLoader());
-    ModuleService.getInstance().add(BedIOModule.class);
-    ModuleService.getInstance().add(BedGraphIOModule.class);
-    ModuleService.getInstance().add(FastaReaderModule.class);
-    ModuleService.getInstance().add(FastaWriterModule.class);
+    ml.addModule(DnaModule.class);
+    //ml.addModule(new CoreModuleLoader());
+    ml.addModule(BedIOModule.class);
+    ml.addModule(BedGraphIOModule.class);
+    ml.addModule(FastaReaderModule.class);
+    ml.addModule(FastaWriterModule.class);
 
     if (args.length > 0) {
       // Run a module
@@ -52,7 +53,7 @@ public class MainDna {
       props.set("matcalc.ui.right-tabs.enabled", false);
       //props.setProperty("matcalc.ui.table.drop-shadow.enabled", false);
 
-      MainMatCalc.main(new DnaInfo(), props);
+      MainMatCalc.main(new DnaInfo(), ml); //, props);
     }
 
   }

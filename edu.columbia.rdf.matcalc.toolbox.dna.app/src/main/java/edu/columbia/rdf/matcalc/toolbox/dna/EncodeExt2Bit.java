@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import org.jebtk.bioinformatics.FastaReader;
 import org.jebtk.bioinformatics.genomic.Chromosome;
 import org.jebtk.bioinformatics.genomic.Genome;
-import org.jebtk.bioinformatics.genomic.GenomeService;
+import org.jebtk.bioinformatics.genomic.ChromosomeService;
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
 import org.jebtk.core.io.FileUtils;
@@ -84,7 +84,7 @@ public class EncodeExt2Bit {
 
       int n = reader.next(buffer);
 
-      Chromosome chr = GenomeService.getInstance().chr(genome,
+      Chromosome chr = ChromosomeService.getInstance().chr(genome,
           reader.currentName());
 
       LOG.info("Creating {} in directory {}", chr, outDir);
