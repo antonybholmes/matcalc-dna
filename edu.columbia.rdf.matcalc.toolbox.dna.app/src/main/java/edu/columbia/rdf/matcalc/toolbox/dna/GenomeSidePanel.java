@@ -18,12 +18,12 @@ import org.jebtk.modern.ModernComponent;
 import org.jebtk.modern.UI;
 import org.jebtk.modern.button.CheckBox;
 import org.jebtk.modern.button.ModernCheckSwitch;
+import org.jebtk.modern.button.ModernTwoStateWidget;
 import org.jebtk.modern.panel.VBox;
 import org.jebtk.modern.scrollpane.ModernScrollPane;
 import org.jebtk.modern.scrollpane.ScrollBarPolicy;
 import org.jebtk.modern.text.ModernLabelBold;
 import org.jebtk.modern.text.ModernSubHeadingLabel;
-import org.jebtk.modern.widget.ModernTwoStateWidget;
 
 /**
  * Control which conservation scores are shown.

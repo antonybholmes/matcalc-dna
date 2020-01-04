@@ -2,9 +2,9 @@ package edu.columbia.rdf.matcalc.toolbox.dna;
 
 import java.net.URL;
 
-import org.jebtk.core.NameProperty;
+import org.jebtk.core.NameGetter;
 
-public class GenomeDownload implements NameProperty {
+public class GenomeDownload implements NameGetter {
   private final URL mChrs;
   private final URL mDna;
   private final String mName;

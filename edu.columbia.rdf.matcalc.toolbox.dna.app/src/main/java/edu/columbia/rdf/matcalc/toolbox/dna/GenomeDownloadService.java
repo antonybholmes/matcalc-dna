@@ -14,7 +14,7 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.jebtk.core.collections.IterMap;
 import org.jebtk.core.collections.IterTreeMap;
-import org.jebtk.core.http.UrlBuilder;
+import org.jebtk.core.http.URLPath;
 import org.jebtk.core.io.FileUtils;
 import org.jebtk.core.io.PathUtils;
 import org.jebtk.core.json.Json;
@@ -68,13 +68,13 @@ public class GenomeDownloadService implements Iterable<Entry<String, GenomeDownl
 
       if (qName.equals("genome")) {
         String name = attributes.getValue("name");
-        UrlBuilder url = new UrlBuilder(attributes.getValue("url"));
+        URLPath url = URLPath.fromUrl(attributes.getValue("url"));
 
         try {
           mDownloadMap.put(name,
               new GenomeDownload(name,
-                  url.resolve(TextUtils.format("{}.chrs.gz", name)).toURL(),
-                  url.resolve(TextUtils.format("{}.dna.zip", name)).toURL()));
+                  url.join(TextUtils.format("{}.chrs.gz", name)).toURL(),
+                  url.join(TextUtils.format("{}.dna.zip", name)).toURL()));
         } catch (MalformedURLException e) {
           e.printStackTrace();
         }
