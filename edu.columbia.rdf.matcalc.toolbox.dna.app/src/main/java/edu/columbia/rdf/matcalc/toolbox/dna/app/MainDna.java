@@ -12,7 +12,7 @@ import org.jebtk.modern.theme.ThemeService;
 import org.xml.sax.SAXException;
 
 import edu.columbia.rdf.matcalc.MainMatCalc;
-import edu.columbia.rdf.matcalc.MatCalcProperties;
+import edu.columbia.rdf.matcalc.MatCalcProps;
 import edu.columbia.rdf.matcalc.ModuleLoader;
 import edu.columbia.rdf.matcalc.ModuleService;
 import edu.columbia.rdf.matcalc.bio.BioModuleLoader;
@@ -47,7 +47,7 @@ public class MainDna {
 
       ThemeService.getInstance().setTheme(ColorTheme.GREEN);
 
-      MatCalcProperties props = new MatCalcProperties();
+      MatCalcProps props = new MatCalcProps();
       props.set("matcalc.ui.files.enabled", false);
       props.set("matcalc.ui.left-tabs.enabled", false);
       props.set("matcalc.ui.right-tabs.enabled", false);
