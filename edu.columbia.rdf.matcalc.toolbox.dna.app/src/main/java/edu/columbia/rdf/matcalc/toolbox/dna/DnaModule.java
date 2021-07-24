@@ -379,7 +379,7 @@ public class DnaModule extends Module {
 
     Bed bed = Bed.parseBedGraph(GenomicType.REGION, file);
 
-    List<GenomicElement> regions = CollectionUtils.sort(bed.getElements().toList());
+    List<GenomicElement> regions = CollectionUtils.sort(bed.getElements());
 
     cmdOutputSeqs(genome, regions, assembly);
   }
@@ -410,7 +410,7 @@ public class DnaModule extends Module {
       List<? extends GenomicRegion> regions,
       SequenceReader assembly) throws IOException {
     for (GenomicRegion region : regions) {
-      SequenceRegion seq = assembly.getSequence(region);
+      SequenceRegion seq = assembly.getSequence(genome, region);
 
       System.out.println(seq.toFasta());
     }
@@ -525,7 +525,7 @@ public class DnaModule extends Module {
     boolean uppercase = dialog.getDisplayUpper();
 
     List<SequenceRegion> sequences = assembly
-        .getSequences(extendedRegions, uppercase, repeatMaskType);
+        .getSequences(genome, extendedRegions, uppercase, repeatMaskType);
 
     //
     // Cope with insertions and deletions
@@ -605,18 +605,16 @@ public class DnaModule extends Module {
     int length = dialog.getLength();
     int t = n * genomes.size();
 
+    Genome genome = GenomeService.getInstance().guessGenome(genomes.get(0));
+    
     List<SequenceRegion> seqs = new ArrayList<SequenceRegion>(t);
 
-    for (String genome : genomes) {
-      System.err.println(genome);
-
-      seqs.addAll(randomDna(GenomeService.getInstance().guessGenome(genome),
+    seqs.addAll(randomDna(genome,
           assembly,
           length,
           n,
           uppercase,
           repeatMaskType));
-    }
 
     Collections.sort(seqs);
 
@@ -637,7 +635,7 @@ public class DnaModule extends Module {
     for (int i = 0; i < seqs.size(); ++i) {
       SequenceRegion seq = seqs.get(i);
 
-      ret.set(i, 0, seq.getGenome());
+      ret.set(i, 0, genome);
       ret.set(i, 1, seq.getLocation());
       ret.set(i, 2, seq.getSequence().getLength());
       ret.set(i, 3, opts);
@@ -682,7 +680,7 @@ public class DnaModule extends Module {
 
     for (GenomicRegion region : regions) {
       ret.add(
-          assembly.getSequence(region, displayUpper, repeatMaskType));
+          assembly.getSequence(genome, region, displayUpper, repeatMaskType));
     }
 
     return ret;
@@ -703,7 +701,7 @@ public class DnaModule extends Module {
 
     GenomicRegion region = GenomicRegion.randomRegion(genome, length);
 
-    return assembly.getSequence(region, displayUpper, repeatMaskType);
+    return assembly.getSequence(genome, region, displayUpper, repeatMaskType);
   }
 
   private void revComp(Genome genome) {
